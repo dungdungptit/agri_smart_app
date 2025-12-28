@@ -3,3 +3,10 @@
 .env.local
 .env.*.local
 node_modules
+
+# Expo
+.expo/
+
+# Native folders (using CNG/Prebuild)
+/android
+/ios

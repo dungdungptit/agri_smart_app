@@ -1,0 +1,4 @@
+# Empty file - do not ignore anything
+!assets/
+!assets/node_modules/
+!_expo/

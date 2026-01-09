@@ -9,10 +9,13 @@ import {
     TextInput,
     Modal,
     Dimensions,
+    ActivityIndicator,
+    Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, borderRadius, shadows, typography } from '../../theme';
 import { provinces } from '../../data/mockData';
+import { getCurrentLocation } from '../../services/weatherService';
 
 const { height } = Dimensions.get('window');
 
@@ -21,15 +24,34 @@ const LocationScreen = ({ navigation }) => {
     const [selectedProvince, setSelectedProvince] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [gpsRequested, setGpsRequested] = useState(false);
+    const [gpsLoading, setGpsLoading] = useState(false);
 
     const filteredProvinces = provinces.filter(p =>
         p.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    const handleGPSPermission = () => {
-        // Simulate GPS permission request
-        setGpsRequested(true);
-        setSelectedProvince({ id: 'gps', name: 'Cần Thơ (GPS)', region: 'Đồng bằng sông Cửu Long' });
+    const handleGPSPermission = async () => {
+        setGpsLoading(true);
+        try {
+            const loc = await getCurrentLocation();
+            setGpsRequested(true);
+            setSelectedProvince({
+                id: 'gps',
+                name: loc.locationName || 'Vị trí GPS',
+                region: `${loc.latitude.toFixed(4)}, ${loc.longitude.toFixed(4)}`,
+                latitude: loc.latitude,
+                longitude: loc.longitude,
+            });
+        } catch (error) {
+            console.error('Error getting GPS location:', error);
+            Alert.alert(
+                'Không thể lấy vị trí',
+                'Vui lòng kiểm tra quyền truy cập vị trí và thử lại, hoặc chọn thủ công.',
+                [{ text: 'OK' }]
+            );
+        } finally {
+            setGpsLoading(false);
+        }
     };
 
     const handleManualSelect = () => {
@@ -49,12 +71,18 @@ const LocationScreen = ({ navigation }) => {
         <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
-                <View style={styles.stepIndicator}>
-                    <View style={[styles.stepDot, styles.stepActive]} />
-                    <View style={styles.stepLine} />
-                    <View style={styles.stepDot} />
+                <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+                    <Ionicons name="arrow-back" size={24} color={colors.textPrimary} />
+                </TouchableOpacity>
+                <View style={styles.stepContainer}>
+                    <View style={styles.stepIndicator}>
+                        <View style={[styles.stepDot, styles.stepActive]} />
+                        <View style={styles.stepLine} />
+                        <View style={styles.stepDot} />
+                    </View>
+                    <Text style={styles.stepText}>Bước 1/2</Text>
                 </View>
-                <Text style={styles.stepText}>Bước 1/2</Text>
+                <View style={styles.headerPlaceholder} />
             </View>
 
             {/* Content */}
@@ -72,18 +100,23 @@ const LocationScreen = ({ navigation }) => {
                     style={[styles.optionCard, gpsRequested && styles.optionCardSelected]}
                     onPress={handleGPSPermission}
                     activeOpacity={0.8}
+                    disabled={gpsLoading}
                 >
                     <View style={[styles.optionIcon, gpsRequested && styles.optionIconSelected]}>
-                        <Ionicons
-                            name="navigate"
-                            size={24}
-                            color={gpsRequested ? colors.textLight : colors.primary}
-                        />
+                        {gpsLoading ? (
+                            <ActivityIndicator size="small" color={colors.primary} />
+                        ) : (
+                            <Ionicons
+                                name="navigate"
+                                size={24}
+                                color={gpsRequested ? colors.textLight : colors.primary}
+                            />
+                        )}
                     </View>
                     <View style={styles.optionContent}>
                         <Text style={styles.optionTitle}>Sử dụng vị trí hiện tại</Text>
                         <Text style={styles.optionDescription}>
-                            Tự động xác định vị trí qua GPS
+                            {gpsLoading ? 'Đang lấy vị trí...' : 'Tự động xác định vị trí qua GPS'}
                         </Text>
                     </View>
                     {gpsRequested && (
@@ -199,9 +232,27 @@ const styles = StyleSheet.create({
         backgroundColor: colors.background,
     },
     header: {
+        flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'space-between',
         paddingTop: spacing.lg,
         paddingBottom: spacing.md,
+        paddingHorizontal: spacing.lg,
+    },
+    backButton: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        backgroundColor: colors.surface,
+        justifyContent: 'center',
+        alignItems: 'center',
+        ...shadows.sm,
+    },
+    stepContainer: {
+        alignItems: 'center',
+    },
+    headerPlaceholder: {
+        width: 40,
     },
     stepIndicator: {
         flexDirection: 'row',

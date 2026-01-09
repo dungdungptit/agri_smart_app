@@ -1,0 +1,122 @@
+Đây là api lấy danh sách các lần chuẩn đoán bệnh
+curl --location 'https://aichat.ptit.edu.vn/v1/conversations?user=aiptit&limit=20' \
+--header 'Authorization: Bearer app-TSFY8tm9VGjBa9R7azSf72On'
+
+app-TSFY8tm9VGjBa9R7azSf72On là EXPO_PUBLIC_PEST_API_KEY trong file .env
+
+trả về
+{
+    "limit": 20,
+    "has_more": false,
+    "data": [
+        {
+            "id": "f1ae2f54-5a61-4703-a386-9a8b39415180",
+            "name": "Đây là bệnh gì?",
+            "inputs": {
+                "tree_type": 1
+            },
+            "status": "normal",
+            "introduction": "",
+            "created_at": 1767009578,
+            "updated_at": 1767009578
+        },
+        {
+            "id": "4020c35c-b7a7-40f5-9984-6491171e30cc",
+            "name": "Đây là bệnh gì?",
+            "inputs": {
+                "tree_type": 1
+            },
+            "status": "normal",
+            "introduction": "",
+            "created_at": 1767009253,
+            "updated_at": 1767009253
+        },
+        {
+            "id": "680e7093-1b9f-4b7a-aec4-01197ccd5e1c",
+            "name": "Đây là bệnh gì?",
+            "inputs": {
+                "tree_type": 1
+            },
+            "status": "normal",
+            "introduction": "",
+            "created_at": 1767009166,
+            "updated_at": 1767009165
+        }
+    ]
+}
+
+đây là api đổi tên 1 chuẩn đoán bệnh
+curl --location 'https://aichat.ptit.edu.vn/v1/conversations/f1ae2f54-5a61-4703-a386-9a8b39415180/name' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer app-TSFY8tm9VGjBa9R7azSf72On' \
+--data '{
+  "name": "Test",
+  "auto_generate": false,
+  "user": "aiptit"
+}'
+
+trả về
+{
+    "id": "f1ae2f54-5a61-4703-a386-9a8b39415180",
+    "name": "Test",
+    "inputs": {
+        "tree_type": 1
+    },
+    "status": "normal",
+    "introduction": "",
+    "created_at": 1767009578,
+    "updated_at": 1767012996
+}
+
+đây là api xóa 1 chuẩn đoán bệnh
+curl --location --request DELETE 'https://aichat.ptit.edu.vn/v1/conversations/680e7093-1b9f-4b7a-aec4-01197ccd5e1c' \
+--header 'Content-Type: application/json' \
+--header 'Accept: application/json' \
+--header 'Authorization: Bearer app-TSFY8tm9VGjBa9R7azSf72On' \
+--data '{
+  "user": "aiptit"
+}'
+trả về status 204
+
+đây là api chi tiết 1 chuẩn đoán bệnh
+curl --location 'https://aichat.ptit.edu.vn/v1/messages?user=aiptit&conversation_id=4020c35c-b7a7-40f5-9984-6491171e30cc' \
+--header 'Authorization: Bearer app-TSFY8tm9VGjBa9R7azSf72On'
+
+trả về
+{
+    "limit": 20,
+    "has_more": false,
+    "data": [
+        {
+            "id": "493ab3f0-5512-4da1-bae1-974636f14c6f",
+            "conversation_id": "4020c35c-b7a7-40f5-9984-6491171e30cc",
+            "parent_message_id": "00000000-0000-0000-0000-000000000000",
+            "inputs": {
+                "tree_type": 1
+            },
+            "query": "Đây là bệnh gì?",
+            "answer": "",
+            "message_files": [
+                {
+                    "id": "4aafde3a-b104-45d8-b2eb-368c909b380b",
+                    "filename": "benh-chay-la-ca-phe_dr.xanh_.",
+                    "type": "image",
+                    "url": "https://drxanh.com/wp-content/uploads/2024/02/benh-chay-la-ca-phe_dr.xanh_.",
+                    "mime_type": "",
+                    "size": -1,
+                    "transfer_method": "remote_url",
+                    "belongs_to": "user",
+                    "upload_file_id": null
+                }
+            ],
+            "feedback": null,
+            "retriever_resources": [],
+            "created_at": 1767009253,
+            "agent_thoughts": [],
+            "status": "error",
+            "error": "Run failed: Client error '404 Not Found' for url 'https://drxanh.com/wp-content/uploads/2024/02/benh-chay-la-ca-phe_dr.xanh_'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"
+        }
+    ]
+}
+
+làm cho tôi hiển thị các lần chuẩn đoán vào trang danh sách chuẩn đoán, có thể sửa tên, ấn vào xem chi tiết, xóa chuẩn đoán, có lọc theo loại cây cà phê thì tree_type 1 hoặc mắc ca thì tree_type 0

@@ -14,7 +14,11 @@ const QnAScreen = ({ navigation }) => {
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
+                <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+                    <Ionicons name="arrow-back" size={24} color={colors.textPrimary} />
+                </TouchableOpacity>
                 <Text style={styles.headerTitle}>Hỏi & Đáp</Text>
+                <View style={styles.headerPlaceholder} />
             </View>
 
             {/* Tabs */}
@@ -141,7 +145,9 @@ const QnAScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.background },
-    header: { padding: spacing.lg, paddingBottom: spacing.sm },
+    header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: spacing.lg, paddingBottom: spacing.sm },
+    backButton: { width: 40, height: 40, borderRadius: 20, backgroundColor: colors.surface, justifyContent: 'center', alignItems: 'center', ...shadows.sm },
+    headerPlaceholder: { width: 40 },
     headerTitle: { ...typography.h2, color: colors.textPrimary },
     tabContainer: { flexDirection: 'row', paddingHorizontal: spacing.lg, marginBottom: spacing.md },
     tab: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingVertical: 10, borderRadius: 10, marginHorizontal: 4 },

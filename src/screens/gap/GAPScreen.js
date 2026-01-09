@@ -19,7 +19,11 @@ const GAPScreen = ({ navigation }) => {
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
+                <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+                    <Ionicons name="arrow-back" size={24} color={colors.textPrimary} />
+                </TouchableOpacity>
                 <Text style={styles.headerTitle}>Kiến thức GAP</Text>
+                <View style={styles.headerPlaceholder} />
             </View>
 
             <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
@@ -94,7 +98,9 @@ const GAPScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.background },
-    header: { padding: spacing.lg },
+    header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: spacing.lg },
+    backButton: { width: 40, height: 40, borderRadius: 20, backgroundColor: colors.surface, justifyContent: 'center', alignItems: 'center', ...shadows.sm },
+    headerPlaceholder: { width: 40 },
     headerTitle: { ...typography.h2, color: colors.textPrimary },
     scrollView: { flex: 1, paddingHorizontal: spacing.lg },
     topicsGrid: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: spacing.lg },

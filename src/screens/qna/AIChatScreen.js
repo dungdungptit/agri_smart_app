@@ -14,6 +14,8 @@ import {
     Alert,
     Modal,
     Dimensions,
+    Keyboard,
+    TouchableWithoutFeedback,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Markdown from 'react-native-markdown-display';
@@ -498,165 +500,168 @@ const AIChatScreen = ({ navigation }) => {
     };
 
     return (
-        <SafeAreaView style={styles.container}>
-            {/* Sidebar Overlay */}
-            {sidebarVisible && (
-                <TouchableOpacity
-                    style={styles.overlay}
-                    activeOpacity={1}
-                    onPress={toggleSidebar}
-                />
-            )}
+        <KeyboardAvoidingView
+            style={styles.container}
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
+        >
+            <SafeAreaView style={styles.safeArea}>
+                {/* Sidebar Overlay */}
+                {sidebarVisible && (
+                    <TouchableOpacity
+                        style={styles.overlay}
+                        activeOpacity={1}
+                        onPress={toggleSidebar}
+                    />
+                )}
 
-            {/* Sidebar */}
-            <Animated.View style={[styles.sidebar, { transform: [{ translateX: sidebarAnim }] }]}>
-                <View style={styles.sidebarHeader}>
-                    <Text style={styles.sidebarTitle}>Lịch sử trò chuyện</Text>
-                    <TouchableOpacity onPress={toggleSidebar}>
-                        <Ionicons name="close" size={24} color={colors.textPrimary} />
+                {/* Sidebar */}
+                <Animated.View style={[styles.sidebar, { transform: [{ translateX: sidebarAnim }] }]}>
+                    <View style={styles.sidebarHeader}>
+                        <Text style={styles.sidebarTitle}>Lịch sử trò chuyện</Text>
+                        <TouchableOpacity onPress={toggleSidebar}>
+                            <Ionicons name="close" size={24} color={colors.textPrimary} />
+                        </TouchableOpacity>
+                    </View>
+
+                    <TouchableOpacity style={styles.newConvButton} onPress={() => { startNewConversation(); toggleSidebar(); }}>
+                        <Ionicons name="add-circle" size={20} color={colors.textLight} />
+                        <Text style={styles.newConvText}>Cuộc trò chuyện mới</Text>
+                    </TouchableOpacity>
+
+                    {loadingConversations ? (
+                        <ActivityIndicator size="large" color={colors.primary} style={{ marginTop: 40 }} />
+                    ) : (
+                        <ScrollView style={styles.convList} showsVerticalScrollIndicator={false}>
+                            {conversations.length === 0 ? (
+                                <Text style={styles.emptyText}>Chưa có cuộc trò chuyện nào</Text>
+                            ) : (
+                                conversations.map(renderConversationItem)
+                            )}
+                        </ScrollView>
+                    )}
+                </Animated.View>
+
+                {/* Header */}
+                <View style={styles.header}>
+                    <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+                        <Ionicons name="arrow-back" size={24} color={colors.textPrimary} />
+                    </TouchableOpacity>
+                    <View style={styles.headerCenter}>
+                        <Text style={styles.headerTitle}>Trợ lý AI</Text>
+                        <View style={styles.statusContainer}>
+                            <View style={styles.onlineDot} />
+                            <Text style={styles.statusText}>Trực tuyến</Text>
+                        </View>
+                    </View>
+                    <TouchableOpacity style={styles.menuButton} onPress={toggleSidebar}>
+                        <Ionicons name="menu" size={24} color={colors.textPrimary} />
                     </TouchableOpacity>
                 </View>
 
-                <TouchableOpacity style={styles.newConvButton} onPress={() => { startNewConversation(); toggleSidebar(); }}>
-                    <Ionicons name="add-circle" size={20} color={colors.textLight} />
-                    <Text style={styles.newConvText}>Cuộc trò chuyện mới</Text>
-                </TouchableOpacity>
-
-                {loadingConversations ? (
-                    <ActivityIndicator size="large" color={colors.primary} style={{ marginTop: 40 }} />
-                ) : (
-                    <ScrollView style={styles.convList} showsVerticalScrollIndicator={false}>
-                        {conversations.length === 0 ? (
-                            <Text style={styles.emptyText}>Chưa có cuộc trò chuyện nào</Text>
-                        ) : (
-                            conversations.map(renderConversationItem)
-                        )}
-                    </ScrollView>
-                )}
-            </Animated.View>
-
-            {/* Header */}
-            <View style={styles.header}>
-                <TouchableOpacity style={styles.menuButton} onPress={toggleSidebar}>
-                    <Ionicons name="menu" size={24} color={colors.textPrimary} />
-                </TouchableOpacity>
-                <View style={styles.headerCenter}>
-                    <Text style={styles.headerTitle}>Trợ lý AI</Text>
-                    <View style={styles.statusContainer}>
-                        <View style={styles.onlineDot} />
-                        <Text style={styles.statusText}>Trực tuyến</Text>
-                    </View>
+                {/* Tree Type Selector */}
+                <View style={styles.treeTypeContainer}>
+                    <TouchableOpacity
+                        style={[styles.treeTypeButton, treeType === 1 && styles.treeTypeButtonActive]}
+                        onPress={() => handleTreeTypeChange(1)}
+                    >
+                        <Text style={styles.treeTypeEmoji}>☕</Text>
+                        <Text style={[styles.treeTypeText, treeType === 1 && styles.treeTypeTextActive]}>Cà phê</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={[styles.treeTypeButton, treeType === 0 && styles.treeTypeButtonActive]}
+                        onPress={() => handleTreeTypeChange(0)}
+                    >
+                        <Text style={styles.treeTypeEmoji}>🌰</Text>
+                        <Text style={[styles.treeTypeText, treeType === 0 && styles.treeTypeTextActive]}>Mắc ca</Text>
+                    </TouchableOpacity>
                 </View>
-                <TouchableOpacity style={styles.newChatButton} onPress={startNewConversation}>
-                    <Ionicons name="add-circle-outline" size={26} color={colors.primary} />
-                </TouchableOpacity>
-            </View>
 
-            {/* Tree Type Selector */}
-            <View style={styles.treeTypeContainer}>
-                <TouchableOpacity
-                    style={[styles.treeTypeButton, treeType === 1 && styles.treeTypeButtonActive]}
-                    onPress={() => handleTreeTypeChange(1)}
-                >
-                    <Text style={styles.treeTypeEmoji}>☕</Text>
-                    <Text style={[styles.treeTypeText, treeType === 1 && styles.treeTypeTextActive]}>Cà phê</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[styles.treeTypeButton, treeType === 0 && styles.treeTypeButtonActive]}
-                    onPress={() => handleTreeTypeChange(0)}
-                >
-                    <Text style={styles.treeTypeEmoji}>🌰</Text>
-                    <Text style={[styles.treeTypeText, treeType === 0 && styles.treeTypeTextActive]}>Mắc ca</Text>
-                </TouchableOpacity>
-            </View>
+                {/* Messages */}
+                <View style={styles.chatContainer}>
+                    <ScrollView
+                        ref={scrollViewRef}
+                        style={styles.messagesContainer}
+                        contentContainerStyle={styles.messagesContent}
+                        showsVerticalScrollIndicator={false}
+                        onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
+                    >
+                        {messages.map(renderMessage)}
 
-            {/* Messages */}
-            <KeyboardAvoidingView
-                style={styles.chatContainer}
-                behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-                keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
-            >
-                <ScrollView
-                    ref={scrollViewRef}
-                    style={styles.messagesContainer}
-                    contentContainerStyle={styles.messagesContent}
-                    showsVerticalScrollIndicator={false}
-                    onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
-                >
-                    {messages.map(renderMessage)}
-
-                    {isLoading && (
-                        <View style={[styles.messageContainer, styles.aiMessageContainer]}>
-                            <View style={styles.aiAvatar}>
-                                <Ionicons name="leaf" size={18} color={colors.textLight} />
-                            </View>
-                            <View style={[styles.messageBubble, styles.aiBubble, styles.typingBubble]}>
-                                <View style={styles.typingIndicator}>
-                                    <ActivityIndicator size="small" color={colors.primary} />
-                                    <Text style={styles.typingText}>Đang phân tích...</Text>
+                        {isLoading && (
+                            <View style={[styles.messageContainer, styles.aiMessageContainer]}>
+                                <View style={styles.aiAvatar}>
+                                    <Ionicons name="leaf" size={18} color={colors.textLight} />
+                                </View>
+                                <View style={[styles.messageBubble, styles.aiBubble, styles.typingBubble]}>
+                                    <View style={styles.typingIndicator}>
+                                        <ActivityIndicator size="small" color={colors.primary} />
+                                        <Text style={styles.typingText}>Đang phân tích...</Text>
+                                    </View>
                                 </View>
                             </View>
-                        </View>
-                    )}
-                </ScrollView>
-
-                {/* Quick Suggestions */}
-                {messages.length <= 1 && (
-                    <ScrollView
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        style={styles.suggestionsContainer}
-                        contentContainerStyle={styles.suggestionsContent}
-                    >
-                        {[
-                            treeType === 1 ? 'Các bệnh phổ biến trên cà phê?' : 'Kỹ thuật trồng mắc ca?',
-                            treeType === 1 ? 'Cách phòng trừ rệp sáp?' : 'Bón phân cho mắc ca?',
-                            treeType === 1 ? 'Bệnh gỉ sắt cà phê?' : 'Phòng bệnh thối rễ?',
-                        ].map((suggestion, index) => (
-                            <TouchableOpacity
-                                key={index}
-                                style={styles.suggestionChip}
-                                onPress={() => setInputText(suggestion)}
-                            >
-                                <Text style={styles.suggestionText}>{suggestion}</Text>
-                            </TouchableOpacity>
-                        ))}
+                        )}
                     </ScrollView>
-                )}
 
-                {/* Input Area */}
-                <View style={styles.inputContainer}>
-                    <View style={styles.inputWrapper}>
-                        <TextInput
-                            style={styles.textInput}
-                            placeholder="Nhập câu hỏi của bạn..."
-                            placeholderTextColor={colors.textMuted}
-                            value={inputText}
-                            onChangeText={setInputText}
-                            multiline
-                            maxLength={500}
-                            editable={!isLoading}
-                        />
-                        <TouchableOpacity
-                            style={[styles.sendButton, (!inputText.trim() || isLoading) && styles.sendButtonDisabled]}
-                            onPress={sendMessage}
-                            disabled={!inputText.trim() || isLoading}
+                    {/* Quick Suggestions */}
+                    {messages.length <= 1 && (
+                        <ScrollView
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                            style={styles.suggestionsContainer}
+                            contentContainerStyle={styles.suggestionsContent}
                         >
-                            <Ionicons
-                                name="send"
-                                size={20}
-                                color={inputText.trim() && !isLoading ? colors.textLight : colors.textMuted}
+                            {[
+                                treeType === 1 ? 'Các bệnh phổ biến trên cà phê?' : 'Kỹ thuật trồng mắc ca?',
+                                treeType === 1 ? 'Cách phòng trừ rệp sáp?' : 'Bón phân cho mắc ca?',
+                                treeType === 1 ? 'Bệnh gỉ sắt cà phê?' : 'Phòng bệnh thối rễ?',
+                            ].map((suggestion, index) => (
+                                <TouchableOpacity
+                                    key={index}
+                                    style={styles.suggestionChip}
+                                    onPress={() => setInputText(suggestion)}
+                                >
+                                    <Text style={styles.suggestionText}>{suggestion}</Text>
+                                </TouchableOpacity>
+                            ))}
+                        </ScrollView>
+                    )}
+
+                    {/* Input Area */}
+                    <View style={styles.inputContainer}>
+                        <View style={styles.inputWrapper}>
+                            <TextInput
+                                style={styles.textInput}
+                                placeholder="Nhập câu hỏi của bạn..."
+                                placeholderTextColor={colors.textMuted}
+                                value={inputText}
+                                onChangeText={setInputText}
+                                multiline
+                                maxLength={500}
+                                editable={!isLoading}
                             />
-                        </TouchableOpacity>
+                            <TouchableOpacity
+                                style={[styles.sendButton, (!inputText.trim() || isLoading) && styles.sendButtonDisabled]}
+                                onPress={sendMessage}
+                                disabled={!inputText.trim() || isLoading}
+                            >
+                                <Ionicons
+                                    name="send"
+                                    size={20}
+                                    color={inputText.trim() && !isLoading ? colors.textLight : colors.textMuted}
+                                />
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 </View>
-            </KeyboardAvoidingView>
-        </SafeAreaView>
+            </SafeAreaView>
+        </KeyboardAvoidingView>
     );
 };
 
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.background },
+    safeArea: { flex: 1 },
 
     // Sidebar styles
     overlay: {
@@ -722,6 +727,7 @@ const styles = StyleSheet.create({
         paddingVertical: spacing.sm, backgroundColor: colors.surface,
         borderBottomWidth: 1, borderBottomColor: colors.border,
     },
+    backButton: { width: 40, height: 40, borderRadius: 20, justifyContent: 'center', alignItems: 'center' },
     menuButton: { width: 40, height: 40, borderRadius: 20, justifyContent: 'center', alignItems: 'center' },
     headerCenter: { flex: 1, alignItems: 'center' },
     headerTitle: { ...typography.h3, color: colors.textPrimary },

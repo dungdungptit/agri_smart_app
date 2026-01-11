@@ -1,5 +1,5 @@
 {
-  "name": "agriapp",
+  "name": "Điện Biên Smart Agri",
   "version": "1.0.0",
   "main": "expo/AppEntry.js",
   "scripts": {
@@ -11,6 +11,7 @@
   "dependencies": {
     "@expo/metro-runtime": "^6.1.2",
     "@expo/vector-icons": "~14.0.4",
+    "@react-native-async-storage/async-storage": "^2.2.0",
     "@react-navigation/bottom-tabs": "^7.0.0",
     "@react-navigation/native": "^7.0.0",
     "@react-navigation/native-stack": "^7.0.0",
@@ -38,7 +39,8 @@
     "react-native-web": "^0.19.12"
   },
   "devDependencies": {
-    "@babel/core": "^7.25.2"
+    "@babel/core": "^7.25.2",
+    "sharp": "^0.34.5"
   },
   "private": true
 }

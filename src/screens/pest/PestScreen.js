@@ -20,7 +20,7 @@ const IMGBB_API_KEY = process.env.EXPO_PUBLIC_IMGBB_API_KEY;
 const PEST_API_URL = process.env.EXPO_PUBLIC_PEST_API_URL;
 const PEST_API_KEY = process.env.EXPO_PUBLIC_PEST_API_KEY;
 const PEST_API_BASE = 'https://aichat.ptit.edu.vn/v1';
-const USER_ID = 'agriapp_user';
+const USER_ID = 'Điện Biên Smart Agri_user';
 
 const PestScreen = ({ navigation }) => {
     const [activeTab, setActiveTab] = useState('camera');

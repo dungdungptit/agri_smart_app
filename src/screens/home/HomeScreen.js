@@ -13,7 +13,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, borderRadius, shadows, typography } from '../../theme';
 import { marketPrices, aiRecommendations, gapArticles } from '../../data/mockData';
-import { getCurrentLocation, fetchWeatherData } from '../../services/weatherService';
+import { getLocationForWeather, fetchWeatherData } from '../../services/weatherService';
 
 const { width } = Dimensions.get('window');
 
@@ -29,7 +29,7 @@ const HomeScreen = ({ navigation }) => {
     const loadWeatherData = async () => {
         setLoading(true);
         try {
-            const loc = await getCurrentLocation();
+            const loc = await getLocationForWeather();
             setLocation(loc);
 
             const weatherData = await fetchWeatherData(loc.latitude, loc.longitude);
@@ -44,12 +44,12 @@ const HomeScreen = ({ navigation }) => {
     };
 
     const quickAccessItems = [
-        { id: '1', name: 'Thời tiết', icon: 'partly-sunny', color: colors.weatherSunny, screen: 'Weather' },
-        { id: '2', name: 'Sâu bệnh', icon: 'bug', color: colors.error, screen: 'Pest' },
+        { id: '1', name: 'Sâu bệnh', icon: 'bug', color: colors.error, screen: 'Pest' },
+        { id: '2', name: 'Trợ lý AI', icon: 'chatbubble-ellipses', color: colors.info, screen: 'AIChat' },
         { id: '3', name: 'GAP', icon: 'book', color: colors.primary, screen: 'GAP' },
-        { id: '4', name: 'Thị trường', icon: 'trending-up', color: colors.success, screen: 'Market' },
-        { id: '5', name: 'Mua/Bán', icon: 'cart', color: colors.accent, screen: 'Market' },
-        { id: '6', name: 'Hỏi & Đáp', icon: 'chatbubbles', color: colors.info, screen: 'AIChat' },
+        { id: '4', name: 'Thời tiết', icon: 'partly-sunny', color: colors.weatherSunny, screen: 'Weather' },
+        { id: '5', name: 'Thị trường', icon: 'trending-up', color: colors.success, screen: 'Market' },
+        { id: '6', name: 'Mua/Bán', icon: 'cart', color: colors.accent, screen: 'Market' },
     ];
 
     const getWeatherIcon = (icon) => {
@@ -192,7 +192,7 @@ const HomeScreen = ({ navigation }) => {
                 <View style={styles.section}>
                     <View style={styles.sectionHeader}>
                         <Text style={styles.sectionTitle}>📊 Giá thị trường</Text>
-                        <TouchableOpacity onPress={() => navigation.navigate('Market')}><Text style={styles.seeAll}>Xem tất cả</Text></TouchableOpacity>
+                        <TouchableOpacity onPress={() => navigation.navigate('MarketPriceDetail')}><Text style={styles.seeAll}>Xem tất cả</Text></TouchableOpacity>
                     </View>
                     <View style={styles.priceCards}>
                         {marketPrices.slice(0, 4).map((item) => (

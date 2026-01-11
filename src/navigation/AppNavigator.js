@@ -16,6 +16,7 @@ import HomeScreen from '../screens/home/HomeScreen';
 import WeatherScreen from '../screens/weather/WeatherScreen';
 import PestScreen from '../screens/pest/PestScreen';
 import MarketScreen from '../screens/market/MarketScreen';
+import MarketPriceDetailScreen from '../screens/market/MarketPriceDetailScreen';
 import GAPScreen from '../screens/gap/GAPScreen';
 import QnAScreen from '../screens/qna/QnAScreen';
 import AIChatScreen from '../screens/qna/AIChatScreen';
@@ -33,9 +34,9 @@ const MainTabs = () => {
                     let iconName;
                     switch (route.name) {
                         case 'Home': iconName = focused ? 'home' : 'home-outline'; break;
-                        case 'Weather': iconName = focused ? 'partly-sunny' : 'partly-sunny-outline'; break;
                         case 'Pest': iconName = focused ? 'bug' : 'bug-outline'; break;
-                        case 'Market': iconName = focused ? 'trending-up' : 'trending-up-outline'; break;
+                        case 'AIChat': iconName = focused ? 'chatbubble-ellipses' : 'chatbubble-ellipses-outline'; break;
+                        case 'Weather': iconName = focused ? 'partly-sunny' : 'partly-sunny-outline'; break;
                         case 'More': iconName = focused ? 'grid' : 'grid-outline'; break;
                         default: iconName = 'ellipse';
                     }
@@ -57,9 +58,9 @@ const MainTabs = () => {
             })}
         >
             <Tab.Screen name="Home" component={HomeScreen} options={{ tabBarLabel: 'Trang chủ' }} />
-            <Tab.Screen name="Weather" component={WeatherScreen} options={{ tabBarLabel: 'Thời tiết' }} />
             <Tab.Screen name="Pest" component={PestScreen} options={{ tabBarLabel: 'Sâu bệnh' }} />
-            <Tab.Screen name="Market" component={MarketScreen} options={{ tabBarLabel: 'Thị trường' }} />
+            <Tab.Screen name="AIChat" component={AIChatScreen} options={{ tabBarLabel: 'Trợ lý AI' }} />
+            <Tab.Screen name="Weather" component={WeatherScreen} options={{ tabBarLabel: 'Thời tiết' }} />
             <Tab.Screen name="More" component={MoreScreen} options={{ tabBarLabel: 'Thêm' }} />
         </Tab.Navigator>
     );
@@ -72,7 +73,9 @@ const MoreScreen = ({ navigation }) => {
 
     const menuItems = [
         { title: 'Kiến thức GAP', icon: 'book', screen: 'GAP', color: colors.primary },
-        { title: 'Hỏi & Đáp', icon: 'chatbubbles', screen: 'QnA', color: colors.info },
+        { title: 'Diễn đàn', icon: 'chatbubbles', screen: 'QnA', color: colors.info },
+        { title: 'Thị trường', icon: 'trending-up', screen: 'Market', color: colors.warning },
+        { title: 'Mua/Bán', icon: 'cart', screen: 'Market', color: colors.success },
         { title: 'Phân bón', icon: 'leaf', screen: null, color: colors.success },
         { title: 'Cài đặt', icon: 'settings', screen: null, color: colors.textSecondary },
         { title: 'Hỗ trợ', icon: 'help-circle', screen: null, color: colors.accent },
@@ -137,6 +140,7 @@ const AppNavigator = () => {
                 <Stack.Screen name="GAP" component={GAPScreen} />
                 <Stack.Screen name="QnA" component={QnAScreen} />
                 <Stack.Screen name="AIChat" component={AIChatScreen} />
+                <Stack.Screen name="MarketPriceDetail" component={MarketPriceDetailScreen} />
             </Stack.Navigator>
         </NavigationContainer>
     );

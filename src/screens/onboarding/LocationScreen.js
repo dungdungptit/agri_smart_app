@@ -15,7 +15,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, borderRadius, shadows, typography } from '../../theme';
 import { provinces } from '../../data/mockData';
-import { getCurrentLocation } from '../../services/weatherService';
+import { getCurrentLocation, saveUserLocation } from '../../services/weatherService';
 
 const { height } = Dimensions.get('window');
 
@@ -35,13 +35,17 @@ const LocationScreen = ({ navigation }) => {
         try {
             const loc = await getCurrentLocation();
             setGpsRequested(true);
-            setSelectedProvince({
+            const gpsLocation = {
                 id: 'gps',
                 name: loc.locationName || 'Vị trí GPS',
                 region: `${loc.latitude.toFixed(4)}, ${loc.longitude.toFixed(4)}`,
                 latitude: loc.latitude,
                 longitude: loc.longitude,
-            });
+                locationName: loc.locationName || 'Vị trí GPS',
+            };
+            setSelectedProvince(gpsLocation);
+            // Save GPS location for weather API
+            await saveUserLocation(gpsLocation);
         } catch (error) {
             console.error('Error getting GPS location:', error);
             Alert.alert(
@@ -58,9 +62,20 @@ const LocationScreen = ({ navigation }) => {
         setShowPicker(true);
     };
 
-    const handleSelectProvince = (province) => {
+    const handleSelectProvince = async (province) => {
         setSelectedProvince(province);
         setShowPicker(false);
+        // Save selected commune location with coordinates for weather API
+        const locationData = {
+            id: province.id,
+            name: province.name,
+            region: province.region,
+            latitude: province.lat,  // lat from mockData
+            longitude: province.long, // long from mockData
+            locationName: province.name,
+            loai: province.loai,
+        };
+        await saveUserLocation(locationData);
     };
 
     const handleContinue = () => {

@@ -1,7 +1,46 @@
 // Weather Service - Open-Meteo API Integration
 import * as Location from 'expo-location';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const OPEN_METEO_API = 'https://api.open-meteo.com/v1/forecast';
+const SAVED_LOCATION_KEY = '@saved_location';
+
+// Save user's selected location
+export const saveUserLocation = async (locationData) => {
+    try {
+        await AsyncStorage.setItem(SAVED_LOCATION_KEY, JSON.stringify(locationData));
+        return true;
+    } catch (error) {
+        console.error('Error saving location:', error);
+        return false;
+    }
+};
+
+// Get saved location (if exists)
+export const getSavedLocation = async () => {
+    try {
+        const savedData = await AsyncStorage.getItem(SAVED_LOCATION_KEY);
+        if (savedData) {
+            return JSON.parse(savedData);
+        }
+        return null;
+    } catch (error) {
+        console.error('Error getting saved location:', error);
+        return null;
+    }
+};
+
+// Get location - prioritize saved location, fallback to GPS
+export const getLocationForWeather = async () => {
+    // First try to get saved location
+    const savedLocation = await getSavedLocation();
+    if (savedLocation && savedLocation.latitude && savedLocation.longitude) {
+        return savedLocation;
+    }
+
+    // Fallback to GPS
+    return getCurrentLocation();
+};
 
 // Weather code mapping to icon and description
 const weatherCodeMap = {
@@ -186,4 +225,7 @@ const formatDay = (dateString, index) => {
 export default {
     getCurrentLocation,
     fetchWeatherData,
+    saveUserLocation,
+    getSavedLocation,
+    getLocationForWeather,
 };

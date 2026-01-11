@@ -17,7 +17,7 @@ const QnAScreen = ({ navigation }) => {
                 <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
                     <Ionicons name="arrow-back" size={24} color={colors.textPrimary} />
                 </TouchableOpacity>
-                <Text style={styles.headerTitle}>Hỏi & Đáp</Text>
+                <Text style={styles.headerTitle}>Diễn đàn hỏi & đáp</Text>
                 <View style={styles.headerPlaceholder} />
             </View>
 

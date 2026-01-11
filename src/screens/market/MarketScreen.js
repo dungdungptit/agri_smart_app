@@ -8,6 +8,7 @@ import {
     SafeAreaView,
     TextInput,
     Dimensions,
+    Modal,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, borderRadius, shadows, typography } from '../../theme';
@@ -19,13 +20,14 @@ const MarketScreen = ({ navigation }) => {
     const [activeTab, setActiveTab] = useState('prices');
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedRegion, setSelectedRegion] = useState('all');
+    const [selectedProduct, setSelectedProduct] = useState(null);
 
     const filteredPrices = marketPrices.filter(p =>
         p.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
         (selectedRegion === 'all' || p.region === selectedRegion)
     );
 
-    const regions = ['all', 'Cần Thơ', 'An Giang', 'Đắk Lắk', 'Bình Thuận', 'Tiền Giang'];
+    const regions = ['all', 'Điện Biên', 'Đắk Lắk', 'Lâm Đồng', 'Gia Lai', 'Đắk Nông'];
 
     return (
         <SafeAreaView style={styles.container}>
@@ -134,7 +136,7 @@ const MarketScreen = ({ navigation }) => {
                         <View style={styles.section}>
                             <Text style={styles.sectionTitle}>Bảng giá hôm nay</Text>
                             {filteredPrices.map((item) => (
-                                <TouchableOpacity key={item.id} style={styles.priceCard} activeOpacity={0.8}>
+                                <TouchableOpacity key={item.id} style={styles.priceCard} activeOpacity={0.8} onPress={() => setSelectedProduct(item)}>
                                     <View style={styles.priceInfo}>
                                         <Text style={styles.priceName}>{item.name}</Text>
                                         <View style={styles.priceLocation}>
@@ -317,6 +319,93 @@ const MarketScreen = ({ navigation }) => {
 
                 <View style={styles.bottomSpacer} />
             </ScrollView>
+
+            {/* Product Detail Modal */}
+            <Modal
+                visible={selectedProduct !== null}
+                transparent={true}
+                animationType="slide"
+                onRequestClose={() => setSelectedProduct(null)}
+            >
+                <View style={styles.modalOverlay}>
+                    <View style={styles.modalContent}>
+                        {selectedProduct && (
+                            <>
+                                <View style={styles.modalHeader}>
+                                    <Text style={styles.modalTitle}>Chi tiết giá</Text>
+                                    <TouchableOpacity onPress={() => setSelectedProduct(null)} style={styles.modalClose}>
+                                        <Ionicons name="close" size={24} color={colors.textPrimary} />
+                                    </TouchableOpacity>
+                                </View>
+
+                                <View style={styles.modalBody}>
+                                    <View style={styles.modalProductIcon}>
+                                        <Ionicons
+                                            name={selectedProduct.name.includes('Cà phê') ? 'cafe' :
+                                                selectedProduct.name.includes('Mắc ca') ? 'nutrition' :
+                                                    selectedProduct.name.includes('Dứa') ? 'leaf' : 'water-outline'}
+                                            size={40}
+                                            color={colors.primary}
+                                        />
+                                    </View>
+                                    <Text style={styles.modalProductName}>{selectedProduct.name}</Text>
+
+                                    <View style={styles.modalPriceBox}>
+                                        <Text style={styles.modalPriceLabel}>Giá hiện tại</Text>
+                                        <Text style={styles.modalPriceValue}>
+                                            {selectedProduct.price.toLocaleString()}đ/{selectedProduct.unit}
+                                        </Text>
+                                        <View style={[
+                                            styles.modalPriceChange,
+                                            { backgroundColor: selectedProduct.change > 0 ? colors.success + '20' : colors.error + '20' }
+                                        ]}>
+                                            <Ionicons
+                                                name={selectedProduct.change > 0 ? 'trending-up' : 'trending-down'}
+                                                size={18}
+                                                color={selectedProduct.change > 0 ? colors.success : colors.error}
+                                            />
+                                            <Text style={[
+                                                styles.modalChangeText,
+                                                { color: selectedProduct.change > 0 ? colors.success : colors.error }
+                                            ]}>
+                                                {selectedProduct.change > 0 ? '+' : ''}{selectedProduct.change}% so với hôm qua
+                                            </Text>
+                                        </View>
+                                    </View>
+
+                                    <View style={styles.modalInfoRow}>
+                                        <View style={styles.modalInfoItem}>
+                                            <Ionicons name="location" size={20} color={colors.primary} />
+                                            <Text style={styles.modalInfoLabel}>Vùng</Text>
+                                            <Text style={styles.modalInfoValue}>{selectedProduct.region}</Text>
+                                        </View>
+                                        <View style={styles.modalInfoItem}>
+                                            <Ionicons name="calendar" size={20} color={colors.primary} />
+                                            <Text style={styles.modalInfoLabel}>Cập nhật</Text>
+                                            <Text style={styles.modalInfoValue}>11/01/2026</Text>
+                                        </View>
+                                    </View>
+
+                                    <View style={styles.modalNote}>
+                                        <Ionicons name="information-circle" size={18} color={colors.info} />
+                                        <Text style={styles.modalNoteText}>
+                                            Giá tham khảo có thể thay đổi tùy theo chất lượng và số lượng giao dịch.
+                                        </Text>
+                                    </View>
+                                </View>
+
+                                <TouchableOpacity
+                                    style={styles.modalButton}
+                                    onPress={() => setSelectedProduct(null)}
+                                >
+                                    <Ionicons name="chatbubble-ellipses" size={20} color={colors.textLight} />
+                                    <Text style={styles.modalButtonText}>Hỏi trợ lý AI về giá này</Text>
+                                </TouchableOpacity>
+                            </>
+                        )}
+                    </View>
+                </View>
+            </Modal>
         </SafeAreaView>
     );
 };
@@ -696,6 +785,132 @@ const styles = StyleSheet.create({
     },
     bottomSpacer: {
         height: 100,
+    },
+    // Modal styles
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        justifyContent: 'flex-end',
+    },
+    modalContent: {
+        backgroundColor: colors.surface,
+        borderTopLeftRadius: borderRadius.xl,
+        borderTopRightRadius: borderRadius.xl,
+        paddingTop: spacing.md,
+        paddingBottom: spacing.xl,
+        paddingHorizontal: spacing.lg,
+        maxHeight: '80%',
+    },
+    modalHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingBottom: spacing.md,
+        borderBottomWidth: 1,
+        borderBottomColor: colors.border,
+    },
+    modalTitle: {
+        ...typography.h3,
+        color: colors.textPrimary,
+    },
+    modalClose: {
+        padding: spacing.xs,
+    },
+    modalBody: {
+        alignItems: 'center',
+        paddingVertical: spacing.lg,
+    },
+    modalProductIcon: {
+        width: 80,
+        height: 80,
+        borderRadius: 40,
+        backgroundColor: colors.primaryLight + '20',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: spacing.md,
+    },
+    modalProductName: {
+        ...typography.h3,
+        color: colors.textPrimary,
+        textAlign: 'center',
+        marginBottom: spacing.lg,
+    },
+    modalPriceBox: {
+        backgroundColor: colors.background,
+        borderRadius: borderRadius.lg,
+        padding: spacing.lg,
+        width: '100%',
+        alignItems: 'center',
+        marginBottom: spacing.lg,
+    },
+    modalPriceLabel: {
+        ...typography.bodySmall,
+        color: colors.textSecondary,
+        marginBottom: spacing.xs,
+    },
+    modalPriceValue: {
+        fontSize: 32,
+        fontWeight: '700',
+        color: colors.primary,
+        marginBottom: spacing.sm,
+    },
+    modalPriceChange: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: spacing.md,
+        paddingVertical: spacing.xs,
+        borderRadius: borderRadius.round,
+    },
+    modalChangeText: {
+        ...typography.bodySmall,
+        fontWeight: '600',
+        marginLeft: spacing.xs,
+    },
+    modalInfoRow: {
+        flexDirection: 'row',
+        width: '100%',
+        justifyContent: 'space-around',
+        marginBottom: spacing.lg,
+    },
+    modalInfoItem: {
+        alignItems: 'center',
+    },
+    modalInfoLabel: {
+        ...typography.caption,
+        color: colors.textMuted,
+        marginTop: spacing.xs,
+    },
+    modalInfoValue: {
+        ...typography.body,
+        color: colors.textPrimary,
+        fontWeight: '600',
+    },
+    modalNote: {
+        flexDirection: 'row',
+        backgroundColor: colors.info + '15',
+        borderRadius: borderRadius.md,
+        padding: spacing.md,
+        alignItems: 'flex-start',
+    },
+    modalNoteText: {
+        ...typography.caption,
+        color: colors.info,
+        marginLeft: spacing.sm,
+        flex: 1,
+    },
+    modalButton: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: colors.primary,
+        borderRadius: borderRadius.md,
+        paddingVertical: spacing.md,
+        marginTop: spacing.md,
+    },
+    modalButtonText: {
+        ...typography.button,
+        color: colors.textLight,
+        marginLeft: spacing.sm,
     },
 });
 

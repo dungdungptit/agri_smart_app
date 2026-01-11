@@ -1,4 +1,4 @@
-# 🌱 AgriApp - Ứng dụng Nông nghiệp Thông minh
+# 🌱 Điện Biên Smart Agri - Nền tảng nông nghiệp thông minh tỉnh Điện Biên
 
 <p align="center">
   <strong>Ứng dụng hỗ trợ nông dân Việt Nam quản lý cây trồng, dự báo thời tiết, chẩn đoán sâu bệnh và cập nhật giá thị trường.</strong>
@@ -88,7 +88,7 @@
 
 ```bash
 git clone <repository-url>
-cd AgriApp
+cd Điện Biên Smart Agri
 ```
 
 ### 2. Cài đặt dependencies
@@ -157,7 +157,7 @@ npx expo start --clear
 
 ## 🏗️ Build Production
 
-AgriApp sử dụng **EAS Build** để build ứng dụng production.
+Điện Biên Smart Agri sử dụng **EAS Build** để build ứng dụng production.
 
 ### Cấu hình EAS (eas.json)
 
@@ -251,7 +251,7 @@ npx netlify deploy --dir=dist --prod
 ## 📁 Cấu trúc dự án
 
 ```
-AgriApp/
+Điện Biên Smart Agri/
 ├── App.js                 # Entry point
 ├── app.json               # Expo configuration
 ├── eas.json               # EAS Build configuration

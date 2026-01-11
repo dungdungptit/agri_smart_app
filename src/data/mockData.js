@@ -1,28 +1,15 @@
-// Mock data for AgriApp - Điện Biên Province
+// Mock data for Điện Biên Smart Agri - Điện Biên Province
 // Focus: Cà phê (Coffee) & Mắc ca (Macadamia)
 
 // Điện Biên districts
-export const provinces = [
-    { id: '1', name: 'TP. Điện Biên Phủ', region: 'Tây Bắc Bộ' },
-    { id: '2', name: 'Thị xã Mường Lay', region: 'Tây Bắc Bộ' },
-    { id: '3', name: 'Mường Nhé', region: 'Tây Bắc Bộ' },
-    { id: '4', name: 'Mường Chà', region: 'Tây Bắc Bộ' },
-    { id: '5', name: 'Tủa Chùa', region: 'Tây Bắc Bộ' },
-    { id: '6', name: 'Tuần Giáo', region: 'Tây Bắc Bộ' },
-    { id: '7', name: 'Điện Biên', region: 'Tây Bắc Bộ' },
-    { id: '8', name: 'Điện Biên Đông', region: 'Tây Bắc Bộ' },
-    { id: '9', name: 'Mường Ảng', region: 'Tây Bắc Bộ' },
-    { id: '10', name: 'Nậm Pồ', region: 'Tây Bắc Bộ' },
-];
+export const provinces = [{ loai: "xã", name: "Búng Lao", long: 103.306, lat: 21.5388, id_xa: 2279, region: "Tây Bắc Bộ", id: 1 }, { loai: "xã", name: "Chà Tở", long: 102.939, lat: 21.988, id_xa: 2258, region: "Tây Bắc Bộ", id: 2 }, { loai: "xã", name: "Chiềng Sinh", long: 103.34, lat: 21.6201, id_xa: 2276, region: "Tây Bắc Bộ", id: 3 }, { loai: "phường", name: "Điện Biên Phủ", long: 103.046, lat: 21.4095, id_xa: 2247, region: "Tây Bắc Bộ", id: 4 }, { loai: "xã", name: "Mường Ảng", long: 103.214, lat: 21.4915, id_xa: 2273, region: "Tây Bắc Bộ", id: 5 }, { loai: "xã", name: "Mường Chà", long: 102.799, lat: 21.9679, id_xa: 2250, region: "Tây Bắc Bộ", id: 6 }, { loai: "xã", name: "Mường Lạn", long: 103.314, lat: 21.4545, id_xa: 2280, region: "Tây Bắc Bộ", id: 7 }, { loai: "phường", name: "Mường Lay", long: 103.174, lat: 22.0203, id_xa: 2248, region: "Tây Bắc Bộ", id: 8 }, { loai: "xã", name: "Mường Luân", long: 103.385, lat: 21.2474, id_xa: 2266, region: "Tây Bắc Bộ", id: 9 }, { loai: "xã", name: "Mường Mùn", long: 103.297, lat: 21.7236, id_xa: 2275, region: "Tây Bắc Bộ", id: 10 }, { loai: "xã", name: "Mường Nhà", long: 103.166, lat: 20.9745, id_xa: 2287, region: "Tây Bắc Bộ", id: 11 }, { loai: "xã", name: "Mường Nhé", long: 102.427, lat: 22.22, id_xa: 2251, region: "Tây Bắc Bộ", id: 12 }, { loai: "xã", name: "Mường Phăng", long: 103.104, lat: 21.466, id_xa: 2281, region: "Tây Bắc Bộ", id: 13 }, { loai: "xã", name: "Mường Pồn", long: 103.032, lat: 21.5931, id_xa: 2263, region: "Tây Bắc Bộ", id: 14 }, { loai: "phường", name: "Mường Thanh", long: 103.034, lat: 21.3627, id_xa: 2246, region: "Tây Bắc Bộ", id: 15 }, { loai: "xã", name: "Mường Toong", long: 102.696, lat: 22.1576, id_xa: 2253, region: "Tây Bắc Bộ", id: 16 }, { loai: "xã", name: "Mường Tùng", long: 103.08, lat: 21.9462, id_xa: 2259, region: "Tây Bắc Bộ", id: 17 }, { loai: "xã", name: "Nà Bủng", long: 102.714, lat: 21.7218, id_xa: 2256, region: "Tây Bắc Bộ", id: 18 }, { loai: "xã", name: "Nà Hỳ", long: 102.724, lat: 21.8366, id_xa: 2255, region: "Tây Bắc Bộ", id: 19 }, { loai: "xã", name: "Na Sang", long: 103.068, lat: 21.7742, id_xa: 2257, region: "Tây Bắc Bộ", id: 20 }, { loai: "xã", name: "Na Son", long: 103.18, lat: 21.2506, id_xa: 2264, region: "Tây Bắc Bộ", id: 21 }, { loai: "xã", name: "Nà Tấu", long: 103.154, lat: 21.5724, id_xa: 2278, region: "Tây Bắc Bộ", id: 22 }, { loai: "xã", name: "Nậm Kè", long: 102.608, lat: 22.0997, id_xa: 2252, region: "Tây Bắc Bộ", id: 23 }, { loai: "xã", name: "Nậm Nèn", long: 103.215, lat: 21.785, id_xa: 2261, region: "Tây Bắc Bộ", id: 24 }, { loai: "xã", name: "Núa Ngam", long: 103.043, lat: 21.172, id_xa: 2286, region: "Tây Bắc Bộ", id: 25 }, { loai: "xã", name: "Pa Ham", long: 103.216, lat: 21.8888, id_xa: 2260, region: "Tây Bắc Bộ", id: 26 }, { loai: "xã", name: "Phình Giàng", long: 103.22, lat: 21.1207, id_xa: 2289, region: "Tây Bắc Bộ", id: 27 }, { loai: "xã", name: "Pu Nhi", long: 103.144, lat: 21.3505, id_xa: 2288, region: "Tây Bắc Bộ", id: 28 }, { loai: "xã", name: "Pú Nhung", long: 103.494, lat: 21.7195, id_xa: 2274, region: "Tây Bắc Bộ", id: 29 }, { loai: "xã", name: "Quài Tở", long: 103.466, lat: 21.552, id_xa: 2277, region: "Tây Bắc Bộ", id: 30 }, { loai: "xã", name: "Quảng Lâm", long: 102.611, lat: 21.9956, id_xa: 2254, region: "Tây Bắc Bộ", id: 31 }, { loai: "xã", name: "Sam Mứn", long: 102.953, lat: 21.2182, id_xa: 2285, region: "Tây Bắc Bộ", id: 32 }, { loai: "xã", name: "Sáng Nhè", long: 103.462, lat: 21.8456, id_xa: 2271, region: "Tây Bắc Bộ", id: 33 }, { loai: "xã", name: "Si Pa Phìn", long: 102.921, lat: 21.8069, id_xa: 2262, region: "Tây Bắc Bộ", id: 34 }, { loai: "xã", name: "Sín Chải", long: 103.331, lat: 22.0568, id_xa: 2269, region: "Tây Bắc Bộ", id: 35 }, { loai: "xã", name: "Sín Thầu", long: 102.293, lat: 22.3798, id_xa: 2249, region: "Tây Bắc Bộ", id: 36 }, { loai: "xã", name: "Sính Phình", long: 103.339, lat: 21.939, id_xa: 2270, region: "Tây Bắc Bộ", id: 37 }, { loai: "xã", name: "Thanh An", long: 103.039, lat: 21.3067, id_xa: 2284, region: "Tây Bắc Bộ", id: 38 }, { loai: "xã", name: "Thanh Nưa", long: 102.96, lat: 21.4283, id_xa: 2282, region: "Tây Bắc Bộ", id: 39 }, { loai: "xã", name: "Thanh Yên", long: 102.921, lat: 21.3062, id_xa: 2283, region: "Tây Bắc Bộ", id: 40 }, { loai: "xã", name: "Tìa Dình", long: 103.341, lat: 21.1393, id_xa: 2290, region: "Tây Bắc Bộ", id: 41 }, { loai: "xã", name: "Tủa Chùa", long: 103.36, lat: 21.8236, id_xa: 2267, region: "Tây Bắc Bộ", id: 42 }, { loai: "xã", name: "Tủa Thàng", long: 103.434, lat: 22, id_xa: 2268, region: "Tây Bắc Bộ", id: 43 }, { loai: "xã", name: "Tuần Giáo", long: 103.434, lat: 21.6313, id_xa: 2272, region: "Tây Bắc Bộ", id: 44 }, { loai: "xã", name: "Xa Dung", long: 103.299, lat: 21.3223, id_xa: 2200, region: "Tây Bắc Bộ", id: 45 }];
 
 // Crops - Focus on Coffee & Macadamia
 export const crops = [
     { id: '1', name: 'Cà phê Arabica', icon: '☕', category: 'Công nghiệp' },
     { id: '2', name: 'Mắc ca', icon: '🌰', category: 'Công nghiệp' },
-    { id: '3', name: 'Cà phê Robusta', icon: '☕', category: 'Công nghiệp' },
-    { id: '4', name: 'Chè Shan Tuyết', icon: '🌱', category: 'Công nghiệp' },
-    { id: '5', name: 'Lúa nương', icon: '🌾', category: 'Lương thực' },
-    { id: '6', name: 'Ngô', icon: '🌾', category: 'Lương thực' },
+    { id: '3', name: 'Dứa', icon: '🍍', category: 'Công nghiệp' },
+    { id: '4', name: 'Chanh leo', icon: '🍋', category: 'Công nghiệp' },
 ];
 
 // Weather mock data - Điện Biên (mountain climate)
@@ -144,16 +131,33 @@ export const pests = [
     },
 ];
 
-// Market prices - Điện Biên focus
+// Market prices - Điện Biên focus (Cập nhật 11/01/2026)
 export const marketPrices = [
-    { id: '1', name: 'Cà phê Arabica nhân', price: 120000, unit: 'kg', change: 3.5, region: 'Điện Biên' },
-    { id: '2', name: 'Cà phê Arabica quả tươi', price: 18000, unit: 'kg', change: 2.8, region: 'Mường Ảng' },
-    { id: '3', name: 'Cà phê Robusta nhân', price: 95000, unit: 'kg', change: 4.2, region: 'Tuần Giáo' },
-    { id: '4', name: 'Mắc ca tươi (vỏ xanh)', price: 80000, unit: 'kg', change: 5.0, region: 'Điện Biên' },
-    { id: '5', name: 'Mắc ca khô (vỏ nâu)', price: 180000, unit: 'kg', change: 3.2, region: 'Tủa Chùa' },
-    { id: '6', name: 'Mắc ca nhân', price: 450000, unit: 'kg', change: 2.5, region: 'Điện Biên' },
-    { id: '7', name: 'Chè Shan Tuyết', price: 250000, unit: 'kg', change: 1.8, region: 'Tủa Chùa' },
-    { id: '8', name: 'Gạo nương Điện Biên', price: 35000, unit: 'kg', change: 1.2, region: 'Điện Biên' },
+    // Cà phê - Giá theo giacaphe.com
+    { id: '1', name: 'Cà phê Robusta nhân', price: 97600, unit: 'kg', change: -0.3, region: 'Đắk Lắk' },
+    { id: '2', name: 'Cà phê Arabica nhân', price: 115000, unit: 'kg', change: 1.5, region: 'Điện Biên' },
+    { id: '3', name: 'Cà phê Arabica quả tươi', price: 18000, unit: 'kg', change: 0.8, region: 'Mường Ảng' },
+
+    // Mắc ca - Giá theo thị trường Việt Nam
+    { id: '4', name: 'Mắc ca tươi (vỏ xanh)', price: 95000, unit: 'kg', change: 2.0, region: 'Điện Biên' },
+    { id: '5', name: 'Mắc ca sấy khô (nguyên vỏ)', price: 380000, unit: 'kg', change: 1.5, region: 'Đắk Lắk' },
+    { id: '6', name: 'Mắc ca sấy khô (nứt vỏ)', price: 420000, unit: 'kg', change: 1.2, region: 'Lâm Đồng' },
+    { id: '7', name: 'Mắc ca nhân (tách vỏ)', price: 520000, unit: 'kg', change: 0.8, region: 'Điện Biên' },
+
+    // Dứa/Thơm - Giá theo thị trường 11/01/2026
+    { id: '8', name: 'Dứa Queen (tại vườn)', price: 12000, unit: 'kg', change: -1.0, region: 'Điện Biên' },
+    { id: '9', name: 'Dứa nguyên vỏ (chợ)', price: 20000, unit: 'kg', change: 0.5, region: 'Điện Biên' },
+    { id: '10', name: 'Dứa mật', price: 27000, unit: 'kg', change: 1.0, region: 'Điện Biên' },
+
+    // Chanh - Giá theo thị trường 11/01/2026
+    { id: '11', name: 'Chanh không hạt (loại 1)', price: 11000, unit: 'kg', change: -2.5, region: 'Điện Biên' },
+    { id: '12', name: 'Chanh bông tím (loại 1)', price: 14000, unit: 'kg', change: -1.8, region: 'Điện Biên' },
+    { id: '13', name: 'Chanh ta (siêu thị)', price: 15000, unit: 'kg', change: 0.5, region: 'Điện Biên' },
+    { id: '14', name: 'Chanh không hạt (siêu thị)', price: 25000, unit: 'kg', change: 0.0, region: 'Điện Biên' },
+
+    // Sản phẩm khác
+    { id: '15', name: 'Chè Shan Tuyết', price: 250000, unit: 'kg', change: 1.8, region: 'Tủa Chùa' },
+    { id: '16', name: 'Gạo nương Điện Biên', price: 35000, unit: 'kg', change: 1.2, region: 'Điện Biên' },
 ];
 
 // Buy listings

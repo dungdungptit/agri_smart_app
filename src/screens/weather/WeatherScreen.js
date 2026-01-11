@@ -13,7 +13,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, borderRadius, shadows, typography } from '../../theme';
 import { aiRecommendations } from '../../data/mockData';
-import { getCurrentLocation, fetchWeatherData } from '../../services/weatherService';
+import { getLocationForWeather, fetchWeatherData } from '../../services/weatherService';
 
 const { width } = Dimensions.get('window');
 
@@ -31,7 +31,7 @@ const WeatherScreen = ({ navigation }) => {
 
     const loadWeatherData = async () => {
         try {
-            const loc = await getCurrentLocation();
+            const loc = await getLocationForWeather();
             setLocation(loc);
 
             const weatherData = await fetchWeatherData(loc.latitude, loc.longitude);

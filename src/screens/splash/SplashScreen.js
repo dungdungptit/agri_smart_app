@@ -31,10 +31,14 @@ const SplashScreen = ({ navigation }) => {
                 {/* Logo Container */}
                 <View style={styles.logoContainer}>
                     <View style={styles.logoCircle}>
-                        <Text style={styles.logoEmoji}>🌾</Text>
+                        <Image
+                            source={require('../../../assets/logo.webp')}
+                            style={styles.logoImage}
+                            resizeMode="contain"
+                        />
                     </View>
-                    <Text style={styles.appName}>AgriApp</Text>
-                    <Text style={styles.tagline}>Nông nghiệp thông minh</Text>
+                    <Text style={styles.appName}>Điện Biên Smart Agri</Text>
+                    <Text style={styles.tagline}>Nền tảng nông nghiệp thông minh tỉnh Điện Biên</Text>
                 </View>
 
                 {/* Loading Indicator */}
@@ -107,8 +111,10 @@ const styles = StyleSheet.create({
         borderWidth: 3,
         borderColor: 'rgba(255, 255, 255, 0.3)',
     },
-    logoEmoji: {
-        fontSize: 70,
+    logoImage: {
+        width: 100,
+        height: 100,
+        borderRadius: 50,
     },
     appName: {
         ...typography.h1,

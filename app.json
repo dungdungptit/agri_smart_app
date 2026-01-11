@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Điện Biên Smart Agri",
-    "slug": "Điện Biên Smart Agri",
+    "slug": "agriapp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -26,7 +26,7 @@
         "android.permission.CAMERA",
         "android.permission.RECORD_AUDIO"
       ],
-      "package": "com.anonymous.Điện Biên Smart Agri"
+      "package": "com.anhdungvk01.agriapp"
     },
     "web": {
       "favicon": "./assets/favicon.png",

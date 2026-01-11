@@ -37,7 +37,8 @@ const SplashScreen = ({ navigation }) => {
                             resizeMode="contain"
                         />
                     </View>
-                    <Text style={styles.appName}>Điện Biên Smart Agri</Text>
+                    <Text style={styles.appNamePrimary}>Điện Biên</Text>
+                    <Text style={styles.appNameSecondary}>Smart Agri</Text>
                     <Text style={styles.tagline}>Nền tảng nông nghiệp thông minh tỉnh Điện Biên</Text>
                 </View>
 
@@ -116,18 +117,30 @@ const styles = StyleSheet.create({
         height: 100,
         borderRadius: 50,
     },
-    appName: {
+    appNamePrimary: {
         ...typography.h1,
-        fontSize: 42,
+        fontSize: 38,
         color: colors.textLight,
         fontWeight: '700',
+        textAlign: 'center',
         letterSpacing: 2,
+    },
+    appNameSecondary: {
+        ...typography.h1,
+        fontSize: 38,
+        color: colors.textLight,
+        fontWeight: '700',
+        textAlign: 'center',
+        letterSpacing: 2,
+        marginTop: 4,
     },
     tagline: {
         ...typography.body,
         color: 'rgba(255, 255, 255, 0.9)',
-        marginTop: 8,
-        fontSize: 18,
+        marginTop: 16,
+        fontSize: 16,
+        textAlign: 'center',
+        paddingHorizontal: 30,
     },
     loadingContainer: {
         position: 'absolute',

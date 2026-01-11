@@ -26,16 +26,26 @@ const Tab = createBottomTabNavigator();
 
 // Bottom Tab Navigator
 const MainTabs = () => {
+    const { Image } = require('react-native');
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({
                 headerShown: false,
                 tabBarIcon: ({ focused, color, size }) => {
+                    // Use custom image for AI Chat
+                    if (route.name === 'AIChat') {
+                        return (
+                            <Image
+                                source={require('../../assets/icon_tro_li_AI.png')}
+                                style={{ width: size, height: size, opacity: focused ? 1 : 0.6 }}
+                                resizeMode="contain"
+                            />
+                        );
+                    }
                     let iconName;
                     switch (route.name) {
                         case 'Home': iconName = focused ? 'home' : 'home-outline'; break;
                         case 'Pest': iconName = focused ? 'bug' : 'bug-outline'; break;
-                        case 'AIChat': iconName = focused ? 'chatbubble-ellipses' : 'chatbubble-ellipses-outline'; break;
                         case 'Weather': iconName = focused ? 'partly-sunny' : 'partly-sunny-outline'; break;
                         case 'More': iconName = focused ? 'grid' : 'grid-outline'; break;
                         default: iconName = 'ellipse';
@@ -48,8 +58,8 @@ const MainTabs = () => {
                     backgroundColor: colors.surface,
                     borderTopColor: colors.border,
                     paddingTop: 8,
-                    paddingBottom: 8,
-                    height: 65,
+                    paddingBottom: 16,
+                    height: 75,
                 },
                 tabBarLabelStyle: {
                     fontSize: 11,
@@ -124,23 +134,23 @@ const AppNavigator = () => {
                 screenOptions={{ headerShown: false }}
             >
                 {/* Onboarding Flow */}
-                <Stack.Screen name="Splash" component={SplashScreen} />
-                <Stack.Screen name="Terms" component={TermsScreen} />
-                <Stack.Screen name="Location" component={LocationScreen} />
-                <Stack.Screen name="CropSelection" component={CropSelectionScreen} />
+                <Stack.Screen name="Splash" component={SplashScreen} options={{ title: 'Khởi động' }} />
+                <Stack.Screen name="Terms" component={TermsScreen} options={{ title: 'Điều khoản' }} />
+                <Stack.Screen name="Location" component={LocationScreen} options={{ title: 'Vị trí' }} />
+                <Stack.Screen name="CropSelection" component={CropSelectionScreen} options={{ title: 'Chọn cây trồng' }} />
 
                 {/* Auth Flow */}
-                <Stack.Screen name="Login" component={LoginScreen} />
-                <Stack.Screen name="OTP" component={OTPScreen} />
+                <Stack.Screen name="Login" component={LoginScreen} options={{ title: 'Đăng nhập' }} />
+                <Stack.Screen name="OTP" component={OTPScreen} options={{ title: 'Xác thực OTP' }} />
 
                 {/* Main App */}
-                <Stack.Screen name="MainTabs" component={MainTabs} />
+                <Stack.Screen name="MainTabs" component={MainTabs} options={{ title: 'Trang chủ' }} />
 
                 {/* Additional Screens */}
-                <Stack.Screen name="GAP" component={GAPScreen} />
-                <Stack.Screen name="QnA" component={QnAScreen} />
-                <Stack.Screen name="AIChat" component={AIChatScreen} />
-                <Stack.Screen name="MarketPriceDetail" component={MarketPriceDetailScreen} />
+                <Stack.Screen name="GAP" component={GAPScreen} options={{ title: 'Kiến thức GAP' }} />
+                <Stack.Screen name="QnA" component={QnAScreen} options={{ title: 'Diễn đàn' }} />
+                <Stack.Screen name="AIChat" component={AIChatScreen} options={{ title: 'Trợ lý AI' }} />
+                <Stack.Screen name="MarketPriceDetail" component={MarketPriceDetailScreen} options={{ title: 'Chi tiết giá thị trường' }} />
             </Stack.Navigator>
         </NavigationContainer>
     );

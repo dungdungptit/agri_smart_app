@@ -9,6 +9,7 @@ import {
     Dimensions,
     StatusBar,
     ActivityIndicator,
+    Image,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, borderRadius, shadows, typography } from '../../theme';
@@ -45,7 +46,7 @@ const HomeScreen = ({ navigation }) => {
 
     const quickAccessItems = [
         { id: '1', name: 'Sâu bệnh', icon: 'bug', color: colors.error, screen: 'Pest' },
-        { id: '2', name: 'Trợ lý AI', icon: 'chatbubble-ellipses', color: colors.info, screen: 'AIChat' },
+        { id: '2', name: 'Trợ lý AI', icon: 'ai-custom', color: colors.info, screen: 'AIChat', useCustomIcon: true },
         { id: '3', name: 'GAP', icon: 'book', color: colors.primary, screen: 'GAP' },
         { id: '4', name: 'Thời tiết', icon: 'partly-sunny', color: colors.weatherSunny, screen: 'Weather' },
         { id: '5', name: 'Thị trường', icon: 'trending-up', color: colors.success, screen: 'Market' },
@@ -159,7 +160,15 @@ const HomeScreen = ({ navigation }) => {
                                 onPress={() => navigation.navigate(item.screen)}
                             >
                                 <View style={[styles.quickAccessIcon, { backgroundColor: item.color + '20' }]}>
-                                    <Ionicons name={item.icon} size={24} color={item.color} />
+                                    {item.useCustomIcon ? (
+                                        <Image
+                                            source={require('../../../assets/icon_tro_li_AI.png')}
+                                            style={{ width: 24, height: 24 }}
+                                            resizeMode="contain"
+                                        />
+                                    ) : (
+                                        <Ionicons name={item.icon} size={24} color={item.color} />
+                                    )}
                                 </View>
                                 <Text style={styles.quickAccessText}>{item.name}</Text>
                             </TouchableOpacity>
@@ -168,7 +177,7 @@ const HomeScreen = ({ navigation }) => {
                 </View>
 
                 {/* AI Recommendations */}
-                <View style={styles.section}>
+                {/* <View style={styles.section}>
                     <View style={styles.sectionHeader}>
                         <Text style={styles.sectionTitle}>💡 Lời khuyên hôm nay</Text>
                         <TouchableOpacity><Text style={styles.seeAll}>Xem tất cả</Text></TouchableOpacity>
@@ -186,7 +195,7 @@ const HomeScreen = ({ navigation }) => {
                             </View>
                         ))}
                     </ScrollView>
-                </View>
+                </View> */}
 
                 {/* Market Prices */}
                 <View style={styles.section}>

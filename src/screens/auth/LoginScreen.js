@@ -8,13 +8,17 @@ import {
     TextInput,
     KeyboardAvoidingView,
     Platform,
+    ActivityIndicator,
+    Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, borderRadius, shadows, typography } from '../../theme';
+import { sendOTP } from '../../services/authService';
 
 const LoginScreen = ({ navigation }) => {
     const [phoneNumber, setPhoneNumber] = useState('');
     const [isFocused, setIsFocused] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const formatPhoneNumber = (text) => {
         // Remove non-numeric characters
@@ -26,8 +30,36 @@ const LoginScreen = ({ navigation }) => {
 
     const isValidPhone = phoneNumber.length === 10;
 
-    const handleSendOTP = () => {
-        navigation.navigate('OTP', { phoneNumber });
+    const handleSendOTP = async () => {
+        if (!isValidPhone) return;
+
+        setIsLoading(true);
+        try {
+            const result = await sendOTP(phoneNumber);
+
+            if (result.success) {
+                // Navigate to OTP screen with phone number and expiry info
+                navigation.navigate('OTP', {
+                    phoneNumber,
+                    expiresIn: result.data.expiresIn || 5,
+                });
+            } else {
+                Alert.alert(
+                    'Lỗi',
+                    result.error || 'Không thể gửi mã OTP. Vui lòng thử lại.',
+                    [{ text: 'OK' }]
+                );
+            }
+        } catch (error) {
+            console.error('Send OTP error:', error);
+            Alert.alert(
+                'Lỗi',
+                'Đã xảy ra lỗi. Vui lòng thử lại.',
+                [{ text: 'OK' }]
+            );
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -75,6 +107,7 @@ const LoginScreen = ({ navigation }) => {
                             onFocus={() => setIsFocused(true)}
                             onBlur={() => setIsFocused(false)}
                             maxLength={10}
+                            editable={!isLoading}
                         />
                         {isValidPhone && (
                             <Ionicons name="checkmark-circle" size={24} color={colors.success} />
@@ -106,13 +139,19 @@ const LoginScreen = ({ navigation }) => {
 
                 {/* Login Button */}
                 <TouchableOpacity
-                    style={[styles.loginButton, !isValidPhone && styles.buttonDisabled]}
+                    style={[styles.loginButton, (!isValidPhone || isLoading) && styles.buttonDisabled]}
                     onPress={handleSendOTP}
-                    disabled={!isValidPhone}
+                    disabled={!isValidPhone || isLoading}
                     activeOpacity={0.8}
                 >
-                    <Text style={styles.loginButtonText}>Gửi mã OTP</Text>
-                    <Ionicons name="arrow-forward" size={20} color={colors.textLight} />
+                    {isLoading ? (
+                        <ActivityIndicator size="small" color={colors.textLight} />
+                    ) : (
+                        <>
+                            <Text style={styles.loginButtonText}>Gửi mã OTP</Text>
+                            <Ionicons name="arrow-forward" size={20} color={colors.textLight} />
+                        </>
+                    )}
                 </TouchableOpacity>
 
                 {/* Skip Option */}
@@ -120,6 +159,7 @@ const LoginScreen = ({ navigation }) => {
                     style={styles.skipButton}
                     onPress={() => navigation.navigate('MainTabs')}
                     activeOpacity={0.7}
+                    disabled={isLoading}
                 >
                     <Text style={styles.skipButtonText}>Bỏ qua, dùng thử trước</Text>
                 </TouchableOpacity>
@@ -259,6 +299,7 @@ const styles = StyleSheet.create({
         paddingVertical: spacing.md,
         borderRadius: borderRadius.md,
         marginBottom: spacing.md,
+        minHeight: 52,
     },
     buttonDisabled: {
         backgroundColor: colors.border,

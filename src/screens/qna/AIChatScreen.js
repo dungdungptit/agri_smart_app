@@ -24,7 +24,7 @@ import { colors, spacing, borderRadius, shadows, typography } from '../../theme'
 const API_URL = process.env.EXPO_PUBLIC_DIFY_API_URL;
 const API_BASE = process.env.EXPO_PUBLIC_DIFY_API_BASE;
 const API_KEY = process.env.EXPO_PUBLIC_DIFY_API_KEY;
-const USER_ID = 'Điện Biên Smart Agri_user';
+const USER_ID = 'Trợ lý AI Nông nghiệp tỉnh Điện Biên_user';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const SIDEBAR_WIDTH = SCREEN_WIDTH * 0.75;

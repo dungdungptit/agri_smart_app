@@ -1,9 +1,11 @@
 import React from 'react';
+import { View, Text, TouchableOpacity, SafeAreaView, ScrollView, Image, Alert, ActivityIndicator, Platform } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../theme';
+import { useAuth } from '../context/AuthContext';
 
 // Screens
 import SplashScreen from '../screens/splash/SplashScreen';
@@ -26,7 +28,6 @@ const Tab = createBottomTabNavigator();
 
 // Bottom Tab Navigator
 const MainTabs = () => {
-    const { Image } = require('react-native');
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({
@@ -78,8 +79,44 @@ const MainTabs = () => {
 
 // More Screen with additional navigation options
 const MoreScreen = ({ navigation }) => {
-    const React = require('react');
-    const { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView } = require('react-native');
+    const { user, isLoggedIn, logout } = useAuth();
+    const [isLoggingOut, setIsLoggingOut] = React.useState(false);
+
+    const handleLogout = () => {
+        const performLogout = async () => {
+            setIsLoggingOut(true);
+            await logout();
+            setIsLoggingOut(false);
+            // Navigate to Login screen
+            navigation.reset({
+                index: 0,
+                routes: [{ name: 'Login' }],
+            });
+        };
+
+        if (Platform.OS === 'web') {
+            if (window.confirm('Bạn có chắc chắn muốn đăng xuất?')) {
+                performLogout();
+            }
+        } else {
+            Alert.alert(
+                'Đăng xuất',
+                'Bạn có chắc chắn muốn đăng xuất?',
+                [
+                    { text: 'Hủy', style: 'cancel' },
+                    {
+                        text: 'Đăng xuất',
+                        style: 'destructive',
+                        onPress: performLogout,
+                    },
+                ]
+            );
+        }
+    };
+
+    const handleLogin = () => {
+        navigation.navigate('Login');
+    };
 
     const menuItems = [
         { title: 'Kiến thức GAP', icon: 'book', screen: 'GAP', color: colors.primary },
@@ -96,6 +133,89 @@ const MoreScreen = ({ navigation }) => {
             <View style={{ padding: 20 }}>
                 <Text style={{ fontSize: 24, fontWeight: '700', color: colors.textPrimary }}>Thêm</Text>
             </View>
+
+            {/* User Profile Section */}
+            <View style={{ paddingHorizontal: 20, marginBottom: 16 }}>
+                <View style={{
+                    backgroundColor: colors.surface,
+                    borderRadius: 12,
+                    padding: 16,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                }}>
+                    <View style={{
+                        width: 50,
+                        height: 50,
+                        borderRadius: 25,
+                        backgroundColor: isLoggedIn ? colors.primary + '20' : colors.textMuted + '20',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        marginRight: 12,
+                    }}>
+                        <Ionicons
+                            name={isLoggedIn ? 'person' : 'person-outline'}
+                            size={24}
+                            color={isLoggedIn ? colors.primary : colors.textMuted}
+                        />
+                    </View>
+                    <View style={{ flex: 1 }}>
+                        {isLoggedIn ? (
+                            <>
+                                <Text style={{ fontSize: 16, fontWeight: '600', color: colors.textPrimary }}>
+                                    {user?.phoneNumber || 'Người dùng'}
+                                </Text>
+                                <Text style={{ fontSize: 13, color: colors.textSecondary, marginTop: 2 }}>
+                                    Đã xác thực
+                                </Text>
+                            </>
+                        ) : (
+                            <>
+                                <Text style={{ fontSize: 16, fontWeight: '600', color: colors.textPrimary }}>
+                                    Khách
+                                </Text>
+                                <Text style={{ fontSize: 13, color: colors.textSecondary, marginTop: 2 }}>
+                                    Chưa đăng nhập
+                                </Text>
+                            </>
+                        )}
+                    </View>
+                    {isLoggedIn ? (
+                        <TouchableOpacity
+                            onPress={handleLogout}
+                            disabled={isLoggingOut}
+                            style={{
+                                backgroundColor: colors.error + '15',
+                                paddingHorizontal: 12,
+                                paddingVertical: 8,
+                                borderRadius: 8,
+                            }}
+                        >
+                            {isLoggingOut ? (
+                                <ActivityIndicator size="small" color={colors.error} />
+                            ) : (
+                                <Text style={{ color: colors.error, fontWeight: '600', fontSize: 13 }}>
+                                    Đăng xuất
+                                </Text>
+                            )}
+                        </TouchableOpacity>
+                    ) : (
+                        <TouchableOpacity
+                            onPress={handleLogin}
+                            style={{
+                                backgroundColor: colors.primary,
+                                paddingHorizontal: 16,
+                                paddingVertical: 8,
+                                borderRadius: 8,
+                            }}
+                        >
+                            <Text style={{ color: colors.textLight, fontWeight: '600', fontSize: 13 }}>
+                                Đăng nhập
+                            </Text>
+                        </TouchableOpacity>
+                    )}
+                </View>
+            </View>
+
             <ScrollView style={{ flex: 1, paddingHorizontal: 20 }}>
                 {menuItems.map((item, index) => (
                     <TouchableOpacity
@@ -127,17 +247,29 @@ const MoreScreen = ({ navigation }) => {
 
 // Main App Navigator
 const AppNavigator = () => {
+    const { isLoading, isLoggedIn } = useAuth();
+
+    // Show loading screen while checking auth state
+    if (isLoading) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.background }}>
+                <ActivityIndicator size="large" color={colors.primary} />
+                <Text style={{ marginTop: 16, color: colors.textSecondary }}>Đang tải...</Text>
+            </View>
+        );
+    }
+
     return (
         <NavigationContainer>
             <Stack.Navigator
-                initialRouteName="Splash"
+                initialRouteName={isLoggedIn ? "MainTabs" : "Splash"}
                 screenOptions={{ headerShown: false }}
             >
                 {/* Onboarding Flow */}
                 <Stack.Screen name="Splash" component={SplashScreen} options={{ title: 'Khởi động' }} />
-                <Stack.Screen name="Terms" component={TermsScreen} options={{ title: 'Điều khoản' }} />
+                {/* <Stack.Screen name="Terms" component={TermsScreen} options={{ title: 'Điều khoản' }} /> */}
                 <Stack.Screen name="Location" component={LocationScreen} options={{ title: 'Vị trí' }} />
-                <Stack.Screen name="CropSelection" component={CropSelectionScreen} options={{ title: 'Chọn cây trồng' }} />
+                {/* <Stack.Screen name="CropSelection" component={CropSelectionScreen} options={{ title: 'Chọn cây trồng' }} /> */}
 
                 {/* Auth Flow */}
                 <Stack.Screen name="Login" component={LoginScreen} options={{ title: 'Đăng nhập' }} />

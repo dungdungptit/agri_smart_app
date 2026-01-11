@@ -79,7 +79,7 @@ const LocationScreen = ({ navigation }) => {
     };
 
     const handleContinue = () => {
-        navigation.navigate('CropSelection');
+        navigation.navigate('MainTabs');
     };
 
     return (
@@ -95,7 +95,7 @@ const LocationScreen = ({ navigation }) => {
                         <View style={styles.stepLine} />
                         <View style={styles.stepDot} />
                     </View>
-                    <Text style={styles.stepText}>Bước 1/2</Text>
+                    <Text style={styles.stepText}>Bước 1/1</Text>
                 </View>
                 <View style={styles.headerPlaceholder} />
             </View>

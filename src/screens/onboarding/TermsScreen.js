@@ -47,11 +47,11 @@ const TermsScreen = ({ navigation }) => {
                 >
                     <Text style={styles.sectionTitle}>1. Điều khoản sử dụng</Text>
                     <Text style={styles.termsText}>
-                        Chào mừng bạn đến với Điện Biên Smart Agri - Nền tảng nông nghiệp thông minh tỉnh Điện Biên.
+                        Chào mừng bạn đến với Trợ lý AI Nông nghiệp tỉnh Điện Biên - Nền tảng nông nghiệp thông minh tỉnh Điện Biên.
                         Khi sử dụng ứng dụng này, bạn đồng ý tuân thủ các điều khoản và điều kiện sau đây.
                     </Text>
                     <Text style={styles.termsText}>
-                        Điện Biên Smart Agri cung cấp các công cụ hỗ trợ canh tác, thông tin thời tiết,
+                        Trợ lý AI Nông nghiệp tỉnh Điện Biên cung cấp các công cụ hỗ trợ canh tác, thông tin thời tiết,
                         cảnh báo sâu bệnh và kết nối thị trường nông sản. Các thông tin được
                         cung cấp chỉ mang tính chất tham khảo.
                     </Text>
@@ -66,20 +66,20 @@ const TermsScreen = ({ navigation }) => {
                     <Text style={styles.sectionTitle}>3. Quyền và trách nhiệm</Text>
                     <Text style={styles.termsText}>
                         Người dùng có trách nhiệm cung cấp thông tin chính xác khi đăng ký
-                        và sử dụng dịch vụ. Điện Biên Smart Agri không chịu trách nhiệm về các quyết định
+                        và sử dụng dịch vụ. Trợ lý AI Nông nghiệp tỉnh Điện Biên không chịu trách nhiệm về các quyết định
                         canh tác dựa trên thông tin từ ứng dụng.
                     </Text>
 
                     <Text style={styles.sectionTitle}>4. Cập nhật điều khoản</Text>
                     <Text style={styles.termsText}>
-                        Điện Biên Smart Agri có quyền cập nhật điều khoản sử dụng bất cứ lúc nào.
+                        Trợ lý AI Nông nghiệp tỉnh Điện Biên có quyền cập nhật điều khoản sử dụng bất cứ lúc nào.
                         Các thay đổi sẽ được thông báo qua ứng dụng hoặc email.
                     </Text>
 
                     <Text style={styles.sectionTitle}>5. Liên hệ</Text>
                     <Text style={styles.termsText}>
                         Nếu có thắc mắc về điều khoản sử dụng, vui lòng liên hệ:
-                        support@Điện Biên Smart Agri.vn hoặc hotline: 1900-xxxx
+                        support@Trợ lý AI Nông nghiệp tỉnh Điện Biên.vn hoặc hotline: 1900-xxxx
                     </Text>
 
                     <View style={styles.spacer} />

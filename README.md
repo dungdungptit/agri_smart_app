@@ -1,4 +1,4 @@
-# 🌱 Điện Biên Smart Agri - Nền tảng nông nghiệp thông minh tỉnh Điện Biên
+# 🌱 Trợ lý AI Nông nghiệp tỉnh Điện Biên - Nền tảng nông nghiệp thông minh tỉnh Điện Biên
 
 <p align="center">
   <strong>Ứng dụng hỗ trợ nông dân Việt Nam quản lý cây trồng, dự báo thời tiết, chẩn đoán sâu bệnh và cập nhật giá thị trường.</strong>
@@ -88,7 +88,7 @@
 
 ```bash
 git clone <repository-url>
-cd Điện Biên Smart Agri
+cd Trợ lý AI Nông nghiệp tỉnh Điện Biên
 ```
 
 ### 2. Cài đặt dependencies
@@ -157,7 +157,7 @@ npx expo start --clear
 
 ## 🏗️ Build Production
 
-Điện Biên Smart Agri sử dụng **EAS Build** để build ứng dụng production.
+Trợ lý AI Nông nghiệp tỉnh Điện Biên sử dụng **EAS Build** để build ứng dụng production.
 
 ### Cấu hình EAS (eas.json)
 
@@ -251,7 +251,7 @@ npx netlify deploy --dir=dist --prod
 ## 📁 Cấu trúc dự án
 
 ```
-Điện Biên Smart Agri/
+Trợ lý AI Nông nghiệp tỉnh Điện Biên/
 ├── App.js                 # Entry point
 ├── app.json               # Expo configuration
 ├── eas.json               # EAS Build configuration

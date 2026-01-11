@@ -8,16 +8,23 @@ import {
     TextInput,
     KeyboardAvoidingView,
     Platform,
+    ActivityIndicator,
+    Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, borderRadius, shadows, typography } from '../../theme';
+import { verifyOTP, sendOTP } from '../../services/authService';
+import { useAuth } from '../../context/AuthContext';
 
 const OTPScreen = ({ navigation, route }) => {
-    const { phoneNumber } = route.params || { phoneNumber: '0901234567' };
+    const { phoneNumber, expiresIn = 5 } = route.params || { phoneNumber: '0901234567' };
     const [otp, setOtp] = useState(['', '', '', '', '', '']);
-    const [countdown, setCountdown] = useState(60);
+    const [countdown, setCountdown] = useState(expiresIn * 60); // Convert minutes to seconds
     const [canResend, setCanResend] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [isResending, setIsResending] = useState(false);
     const inputRefs = useRef([]);
+    const { login } = useAuth();
 
     useEffect(() => {
         if (countdown > 0) {
@@ -50,20 +57,104 @@ const OTPScreen = ({ navigation, route }) => {
         }
     };
 
-    const handleVerify = (code) => {
-        // Simulate OTP verification
-        console.log('Verifying OTP:', code);
-        navigation.navigate('MainTabs');
+    const handleVerify = async (code) => {
+        if (isLoading) return;
+
+        setIsLoading(true);
+        try {
+            const result = await verifyOTP(phoneNumber, code);
+
+            if (result.success) {
+                // Save token and user to auth context
+                const loginResult = await login(result.data.token, result.data.user);
+
+                if (loginResult.success) {
+                    // Show success message for new users
+                    if (result.data.isNewUser) {
+                        Alert.alert(
+                            'Chào mừng!',
+                            'Tài khoản của bạn đã được tạo thành công.',
+                            [
+                                {
+                                    text: 'Tiếp tục',
+                                    onPress: () => navigation.reset({
+                                        index: 0,
+                                        routes: [{ name: 'Location' }],
+                                    }),
+                                }
+                            ]
+                        );
+                    } else {
+                        // Navigate directly for returning users
+                        navigation.reset({
+                            index: 0,
+                            routes: [{ name: 'Location' }],
+                        });
+                    }
+                } else {
+                    Alert.alert('Lỗi', loginResult.error || 'Không thể lưu thông tin đăng nhập');
+                }
+            } else {
+                Alert.alert(
+                    'Lỗi',
+                    result.error || 'Mã OTP không đúng. Vui lòng thử lại.',
+                    [{ text: 'OK' }]
+                );
+                // Clear OTP inputs on error
+                setOtp(['', '', '', '', '', '']);
+                inputRefs.current[0]?.focus();
+            }
+        } catch (error) {
+            console.error('Verify OTP error:', error);
+            Alert.alert(
+                'Lỗi',
+                'Đã xảy ra lỗi. Vui lòng thử lại.',
+                [{ text: 'OK' }]
+            );
+        } finally {
+            setIsLoading(false);
+        }
     };
 
-    const handleResend = () => {
-        setCountdown(60);
-        setCanResend(false);
-        setOtp(['', '', '', '', '', '']);
-        inputRefs.current[0]?.focus();
+    const handleResend = async () => {
+        setIsResending(true);
+        try {
+            const result = await sendOTP(phoneNumber);
+
+            if (result.success) {
+                setCountdown((result.data.expiresIn || 5) * 60);
+                setCanResend(false);
+                setOtp(['', '', '', '', '', '']);
+                inputRefs.current[0]?.focus();
+
+                Alert.alert(
+                    'Đã gửi lại',
+                    result.message || 'Mã OTP mới đã được gửi đến số điện thoại của bạn.',
+                    [{ text: 'OK' }]
+                );
+            } else {
+                Alert.alert(
+                    'Lỗi',
+                    result.error || 'Không thể gửi lại mã OTP.',
+                    [{ text: 'OK' }]
+                );
+            }
+        } catch (error) {
+            console.error('Resend OTP error:', error);
+            Alert.alert('Lỗi', 'Đã xảy ra lỗi. Vui lòng thử lại.');
+        } finally {
+            setIsResending(false);
+        }
     };
 
     const isComplete = otp.every(digit => digit !== '');
+
+    // Format countdown as mm:ss
+    const formatCountdown = () => {
+        const minutes = Math.floor(countdown / 60);
+        const seconds = countdown % 60;
+        return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    };
 
     return (
         <SafeAreaView style={styles.container}>
@@ -75,6 +166,7 @@ const OTPScreen = ({ navigation, route }) => {
                 <TouchableOpacity
                     style={styles.backButton}
                     onPress={() => navigation.goBack()}
+                    disabled={isLoading}
                 >
                     <Ionicons name="arrow-back" size={24} color={colors.textPrimary} />
                 </TouchableOpacity>
@@ -107,6 +199,7 @@ const OTPScreen = ({ navigation, route }) => {
                             onChangeText={(value) => handleOtpChange(value, index)}
                             onKeyPress={(e) => handleKeyPress(e, index)}
                             autoFocus={index === 0}
+                            editable={!isLoading}
                         />
                     ))}
                 </View>
@@ -114,21 +207,29 @@ const OTPScreen = ({ navigation, route }) => {
                 {/* Countdown / Resend */}
                 <View style={styles.resendContainer}>
                     {canResend ? (
-                        <TouchableOpacity onPress={handleResend} activeOpacity={0.7}>
-                            <Text style={styles.resendButton}>Gửi lại mã OTP</Text>
+                        <TouchableOpacity
+                            onPress={handleResend}
+                            activeOpacity={0.7}
+                            disabled={isResending}
+                        >
+                            {isResending ? (
+                                <ActivityIndicator size="small" color={colors.primary} />
+                            ) : (
+                                <Text style={styles.resendButton}>Gửi lại mã OTP</Text>
+                            )}
                         </TouchableOpacity>
                     ) : (
                         <Text style={styles.countdown}>
-                            Gửi lại mã sau <Text style={styles.countdownNumber}>{countdown}s</Text>
+                            Gửi lại mã sau <Text style={styles.countdownNumber}>{formatCountdown()}</Text>
                         </Text>
                     )}
                 </View>
 
-                {/* Demo Hint */}
-                <View style={styles.demoHint}>
+                {/* Info Hint */}
+                <View style={styles.infoHint}>
                     <Ionicons name="information-circle" size={20} color={colors.info} />
-                    <Text style={styles.demoHintText}>
-                        Demo: Nhập bất kỳ 6 số để tiếp tục
+                    <Text style={styles.infoHintText}>
+                        Mã OTP sẽ được gửi qua SMS. Nếu không nhận được, vui lòng liên hệ quản trị viên.
                     </Text>
                 </View>
 
@@ -137,13 +238,19 @@ const OTPScreen = ({ navigation, route }) => {
 
                 {/* Verify Button */}
                 <TouchableOpacity
-                    style={[styles.verifyButton, !isComplete && styles.buttonDisabled]}
+                    style={[styles.verifyButton, (!isComplete || isLoading) && styles.buttonDisabled]}
                     onPress={() => handleVerify(otp.join(''))}
-                    disabled={!isComplete}
+                    disabled={!isComplete || isLoading}
                     activeOpacity={0.8}
                 >
-                    <Text style={styles.verifyButtonText}>Xác nhận</Text>
-                    <Ionicons name="checkmark-circle" size={20} color={colors.textLight} />
+                    {isLoading ? (
+                        <ActivityIndicator size="small" color={colors.textLight} />
+                    ) : (
+                        <>
+                            <Text style={styles.verifyButtonText}>Xác nhận</Text>
+                            <Ionicons name="checkmark-circle" size={20} color={colors.textLight} />
+                        </>
+                    )}
                 </TouchableOpacity>
             </KeyboardAvoidingView>
         </SafeAreaView>
@@ -219,6 +326,7 @@ const styles = StyleSheet.create({
     resendContainer: {
         alignItems: 'center',
         marginTop: spacing.xl,
+        minHeight: 24,
     },
     countdown: {
         ...typography.body,
@@ -233,19 +341,20 @@ const styles = StyleSheet.create({
         color: colors.primary,
         fontWeight: '600',
     },
-    demoHint: {
+    infoHint: {
         flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
+        alignItems: 'flex-start',
         backgroundColor: colors.info + '15',
         borderRadius: borderRadius.md,
         padding: spacing.md,
         marginTop: spacing.lg,
     },
-    demoHintText: {
+    infoHintText: {
         ...typography.bodySmall,
         color: colors.info,
         marginLeft: spacing.sm,
+        flex: 1,
+        lineHeight: 20,
     },
     spacer: {
         flex: 1,
@@ -258,6 +367,7 @@ const styles = StyleSheet.create({
         paddingVertical: spacing.md,
         borderRadius: borderRadius.md,
         marginBottom: spacing.xl,
+        minHeight: 52,
     },
     buttonDisabled: {
         backgroundColor: colors.border,

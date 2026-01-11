@@ -1,4 +1,4 @@
-// Điện Biên Smart Agri Design System - Colors & Theme
+// Trợ lý AI Nông nghiệp tỉnh Điện Biên Design System - Colors & Theme
 export const colors = {
     // Primary - Agricultural Green
     primary: '#2E7D32',

@@ -3,5 +3,5 @@
   <rect width="1024" height="1024" fill="#2E7D32"/>
   <circle cx="512" cy="400" r="200" fill="#4CAF50" opacity="0.3"/>
   <text x="512" y="450" text-anchor="middle" font-size="200" fill="white">🌾</text>
-  <text x="512" y="700" text-anchor="middle" font-size="80" font-weight="bold" fill="white" font-family="sans-serif">Điện Biên Smart Agri</text>
+  <text x="512" y="700" text-anchor="middle" font-size="80" font-weight="bold" fill="white" font-family="sans-serif">Trợ lý AI Nông nghiệp tỉnh Điện Biên</text>
 </svg>

@@ -1,4 +1,4 @@
-// Mock data for Điện Biên Smart Agri - Điện Biên Province
+// Mock data for Trợ lý AI Nông nghiệp tỉnh Điện Biên - Điện Biên Province
 // Focus: Cà phê (Coffee) & Mắc ca (Macadamia)
 
 // Điện Biên districts

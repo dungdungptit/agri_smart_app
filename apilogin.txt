@@ -1,0 +1,153 @@
+api gửi số điện thoại nhận otp
+curl -X 'POST' \
+  'https://api.dienbien-smart-agri.app/api/v1/auth/send-otp' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "phoneNumber": "0869040236"
+}'
+response
+{
+  "status": "success",
+  "message": "Mã OTP đã được gửi thành công. Vui lòng kiểm tra điện thoại hoặc liên hệ quản trị viên",
+  "data": {
+    "phoneNumber": "+84869040236",
+    "expiresAt": "2026-01-11T08:31:43.976Z",
+    "expiresIn": 5
+  }
+}
+
+api verify otp
+curl -X 'POST' \
+  'https://api.dienbien-smart-agri.app/api/v1/auth/verify-otp' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "phoneNumber": "0869040236",
+  "otpCode": "667465"
+}'
+
+response
+{
+  "status": "success",
+  "message": "Tạo tài khoản và đăng nhập thành công",
+  "data": {
+    "user": {
+      "phoneNumber": "+84869040236",
+      "isActive": true,
+      "isVerified": true,
+      "loginCount": 0,
+      "_id": "696360595b5acd725de58f97",
+      "createdAt": "2026-01-11T08:33:29.816Z",
+      "updatedAt": "2026-01-11T08:33:29.816Z",
+      "__v": 0
+    },
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTYzNjA1OTViNWFjZDcyNWRlNThmOTciLCJwaG9uZU51bWJlciI6Iis4NDg2OTA0MDIzNiIsImlhdCI6MTc2ODEyMDQwOSwiZXhwIjoxNzcwNzEyNDA5fQ.cd4Iy-vO4zju6d1lIjrl9Iw1renv9qa2kMCKLPiHwHc",
+    "tokenExpiration": "2026-02-10T08:33:29.000Z",
+    "isNewUser": true
+  }
+}
+
+api auth me
+curl -X 'GET' \
+  'https://api.dienbien-smart-agri.app/api/v1/auth/me' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTYzNjA1OTViNWFjZDcyNWRlNThmOTciLCJwaG9uZU51bWJlciI6Iis4NDg2OTA0MDIzNiIsImlhdCI6MTc2ODEyMDQwOSwiZXhwIjoxNzcwNzEyNDA5fQ.cd4Iy-vO4zju6d1lIjrl9Iw1renv9qa2kMCKLPiHwHc'
+
+response
+{
+  "status": "success",
+  "data": {
+    "user": {
+      "_id": "696360595b5acd725de58f97",
+      "phoneNumber": "+84869040236",
+      "isActive": true,
+      "isVerified": true,
+      "loginCount": 0,
+      "createdAt": "2026-01-11T08:33:29.816Z",
+      "updatedAt": "2026-01-11T08:33:29.816Z",
+      "__v": 0
+    }
+  }
+}
+
+api logout
+curl -X 'POST' \
+  'https://api.dienbien-smart-agri.app/api/v1/auth/logout' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTYzNjA1OTViNWFjZDcyNWRlNThmOTciLCJwaG9uZU51bWJlciI6Iis4NDg2OTA0MDIzNiIsImlhdCI6MTc2ODEyMDQwOSwiZXhwIjoxNzcwNzEyNDA5fQ.cd4Iy-vO4zju6d1lIjrl9Iw1renv9qa2kMCKLPiHwHc' \
+  -d ''
+
+response
+{
+  "status": "success",
+  "message": "Đăng xuất thành công"
+}
+
+api update vị trí user
+curl -X 'PATCH' \
+  'https://api.dienbien-smart-agri.app/api/v1/locations/update-my-location' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTYzNjA1OTViNWFjZDcyNWRlNThmOTciLCJwaG9uZU51bWJlciI6Iis4NDg2OTA0MDIzNiIsImlhdCI6MTc2ODEyMDQwOSwiZXhwIjoxNzcwNzEyNDA5fQ.cd4Iy-vO4zju6d1lIjrl9Iw1renv9qa2kMCKLPiHwHc' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "latitude": 21.4095,
+  "longitude": 103.046
+}'
+
+response
+{
+  "status": "success",
+  "message": "Cập nhật vị trí thành công",
+  "data": {
+    "user": {
+      "_id": "696360595b5acd725de58f97",
+      "phoneNumber": "+84869040236",
+      "isActive": true,
+      "isVerified": true,
+      "loginCount": 0,
+      "createdAt": "2026-01-11T08:33:29.816Z",
+      "updatedAt": "2026-01-11T08:37:36.785Z",
+      "__v": 0,
+      "location": {
+        "_id": "69634a29bed0a71ba3787526",
+        "type": "ward",
+        "name": "Điện Biên Phủ",
+        "longitude": 103.046,
+        "latitude": 21.4095
+      }
+    },
+    "location": {
+      "_id": "69634a29bed0a71ba3787526",
+      "name": "Điện Biên Phủ",
+      "type": "ward",
+      "coordinates": {
+        "latitude": 21.4095,
+        "longitude": 103.046
+      }
+    }
+  }
+}
+
+api lấy vị trí user sau update
+curl -X 'GET' \
+  'https://api.dienbien-smart-agri.app/api/v1/locations/my-location' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTYzNjA1OTViNWFjZDcyNWRlNThmOTciLCJwaG9uZU51bWJlciI6Iis4NDg2OTA0MDIzNiIsImlhdCI6MTc2ODEyMDQwOSwiZXhwIjoxNzcwNzEyNDA5fQ.cd4Iy-vO4zju6d1lIjrl9Iw1renv9qa2kMCKLPiHwHc'
+
+response
+{
+  "status": "success",
+  "data": {
+    "location": {
+      "_id": "69634a29bed0a71ba3787526",
+      "name": "Điện Biên Phủ",
+      "type": "ward",
+      "coordinates": {
+        "latitude": 21.4095,
+        "longitude": 103.046
+      },
+      "region": "Tây Bắc Bộ"
+    }
+  }
+}

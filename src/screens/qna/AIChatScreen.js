@@ -60,7 +60,7 @@ const AIChatScreen = ({ navigation }) => {
         setMessages([{
             id: 'welcome',
             type: 'ai',
-            text: `Xin chào! 👋 Tôi là trợ lý AI chuyên về **${treeType === 1 ? 'Cà phê' : 'Mắc ca'}**.\n\nHãy đặt câu hỏi, tôi sẽ giúp bạn giải đáp thắc mắc về:\n- 🌱 Kỹ thuật canh tác\n- 🐛 Phòng trừ sâu bệnh\n- 🌾 Thu hoạch và chế biến`,
+            text: `Xin chào! 👋 Tôi là trợ lý AI chuyên về **${treeType === 1 ? 'Cà phê' : 'Mắc ca'}**.\n\nHãy đặt câu hỏi, tôi luôn sẵn sàng hỗ trợ bạn`,
             timestamp: new Date(),
         }]);
     };
@@ -548,7 +548,7 @@ const AIChatScreen = ({ navigation }) => {
                         <Ionicons name="arrow-back" size={24} color={colors.textPrimary} />
                     </TouchableOpacity>
                     <View style={styles.headerCenter}>
-                        <Text style={styles.headerTitle}>Trợ lý AI</Text>
+                        <Text style={styles.headerTitle}>Trợ lý AI Điện Biên</Text>
                         <View style={styles.statusContainer}>
                             <View style={styles.onlineDot} />
                             <Text style={styles.statusText}>Trực tuyến</Text>
@@ -560,7 +560,7 @@ const AIChatScreen = ({ navigation }) => {
                 </View>
 
                 {/* Tree Type Selector */}
-                <View style={styles.treeTypeContainer}>
+                {/*<View style={styles.treeTypeContainer}>
                     <TouchableOpacity
                         style={[styles.treeTypeButton, treeType === 1 && styles.treeTypeButtonActive]}
                         onPress={() => handleTreeTypeChange(1)}
@@ -575,7 +575,7 @@ const AIChatScreen = ({ navigation }) => {
                         <Text style={styles.treeTypeEmoji}>🌰</Text>
                         <Text style={[styles.treeTypeText, treeType === 0 && styles.treeTypeTextActive]}>Mắc ca</Text>
                     </TouchableOpacity>
-                </View>
+                </View> */}
 
                 {/* Messages */}
                 <View style={styles.chatContainer}>
@@ -612,9 +612,8 @@ const AIChatScreen = ({ navigation }) => {
                             contentContainerStyle={styles.suggestionsContent}
                         >
                             {[
-                                treeType === 1 ? 'Các bệnh phổ biến trên cà phê?' : 'Kỹ thuật trồng mắc ca?',
-                                treeType === 1 ? 'Cách phòng trừ rệp sáp?' : 'Bón phân cho mắc ca?',
-                                treeType === 1 ? 'Bệnh gỉ sắt cà phê?' : 'Phòng bệnh thối rễ?',
+                                treeType === 1 ? 'Địa điểm nào thích hợp trồng cà phê?' : 'Địa điểm nào thích hợp trồng mắc ca?',
+                                treeType === 1 ? 'Xã Mường Ảng có thể trồng cà phê không?' : 'Xã Mường Lạn có thể trồng mắc ca không?',
                             ].map((suggestion, index) => (
                                 <TouchableOpacity
                                     key={index}

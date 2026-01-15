@@ -60,7 +60,7 @@ const AIChatScreen = ({ navigation }) => {
         setMessages([{
             id: 'welcome',
             type: 'ai',
-            text: `Xin chào! 👋 Tôi là trợ lý AI chuyên về **${treeType === 1 ? 'Cà phê' : 'Mắc ca'}**.\n\nHãy đặt câu hỏi, tôi luôn sẵn sàng hỗ trợ bạn`,
+            text: `Xin chào! 👋 Tôi là trợ lý AI chuyên về **Nông nghiệp Điện Biên**.\n\nHãy đặt câu hỏi, tôi luôn sẵn sàng hỗ trợ bạn`,
             timestamp: new Date(),
         }]);
     };
@@ -237,7 +237,7 @@ const AIChatScreen = ({ navigation }) => {
             setMessages([{
                 id: 'welcome-' + Date.now(),
                 type: 'ai',
-                text: `Đã chuyển sang chế độ tư vấn **${type === 1 ? 'Cà phê ☕' : 'Mắc ca 🌰'}**.\n\nHãy đặt câu hỏi, tôi sẽ giúp bạn!`,
+                text: `Hãy đặt câu hỏi, tôi sẽ giúp bạn!`,
                 timestamp: new Date(),
             }]);
         }

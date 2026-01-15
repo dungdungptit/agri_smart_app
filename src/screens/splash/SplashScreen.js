@@ -37,8 +37,8 @@ const SplashScreen = ({ navigation }) => {
                             resizeMode="contain"
                         />
                     </View>
-                    <Text style={styles.appNamePrimary}>Điện Biên</Text>
-                    <Text style={styles.appNameSecondary}>Smart Agri</Text>
+                    <Text style={styles.appNamePrimary}>Trợ lý AI</Text>
+                    <Text style={styles.appNameSecondary}>Nông nghiệp</Text>
                     <Text style={styles.tagline}>Nền tảng nông nghiệp thông minh tỉnh Điện Biên</Text>
                 </View>
 

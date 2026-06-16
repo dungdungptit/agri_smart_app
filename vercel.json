@@ -1,0 +1,9 @@
+{
+  "outputDirectory": "dist",
+  "rewrites": [
+    {
+      "source": "/proxy/v1/:path*",
+      "destination": "http://api.dienbien-smart-agri.app/api/v1/:path*"
+    }
+  ]
+}

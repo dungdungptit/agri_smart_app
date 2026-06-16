@@ -10,3 +10,6 @@ node_modules
 # Native folders (using CNG/Prebuild)
 /android
 /ios
+.vercel
+textchat.txt
+apilogin.txt

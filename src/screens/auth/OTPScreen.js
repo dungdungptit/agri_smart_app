@@ -4,20 +4,20 @@ import {
     Text,
     StyleSheet,
     TouchableOpacity,
-    SafeAreaView,
     TextInput,
     KeyboardAvoidingView,
     Platform,
     ActivityIndicator,
     Alert,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, borderRadius, shadows, typography } from '../../theme';
 import { verifyOTP, sendOTP } from '../../services/authService';
 import { useAuth } from '../../context/AuthContext';
 
 const OTPScreen = ({ navigation, route }) => {
-    const { phoneNumber, expiresIn = 5 } = route.params || { phoneNumber: '0901234567' };
+    const { phoneNumber, expiresIn = 5, otpCode } = route.params || { phoneNumber: '0901234567' };
     const [otp, setOtp] = useState(['', '', '', '', '', '']);
     const [countdown, setCountdown] = useState(expiresIn * 60); // Convert minutes to seconds
     const [canResend, setCanResend] = useState(false);
@@ -34,6 +34,15 @@ const OTPScreen = ({ navigation, route }) => {
             setCanResend(true);
         }
     }, [countdown]);
+
+    // Auto-fill and submit when otpCode is provided by the server
+    useEffect(() => {
+        if (otpCode && String(otpCode).length === 6) {
+            const digits = String(otpCode).split('');
+            setOtp(digits);
+            setTimeout(() => handleVerify(String(otpCode)), 300);
+        }
+    }, []);
 
     const handleOtpChange = (value, index) => {
         const newOtp = [...otp];
@@ -120,8 +129,15 @@ const OTPScreen = ({ navigation, route }) => {
             if (result.success) {
                 setCountdown((result.data.expiresIn || 5) * 60);
                 setCanResend(false);
-                setOtp(['', '', '', '', '', '']);
-                inputRefs.current[0]?.focus();
+
+                if (result.data.otpCode && String(result.data.otpCode).length === 6) {
+                    const digits = String(result.data.otpCode).split('');
+                    setOtp(digits);
+                    setTimeout(() => handleVerify(String(result.data.otpCode)), 300);
+                } else {
+                    setOtp(['', '', '', '', '', '']);
+                    inputRefs.current[0]?.focus();
+                }
 
                 Alert.alert(
                     'Đã gửi lại',
@@ -220,6 +236,16 @@ const OTPScreen = ({ navigation, route }) => {
                         </Text>
                     )}
                 </View>
+
+                {/* OTP Code Banner (dev/test mode) */}
+                {otpCode && (
+                    <View style={styles.otpBanner}>
+                        <Ionicons name="key" size={20} color={colors.success} />
+                        <Text style={styles.otpBannerText}>
+                            Mã OTP của bạn: <Text style={styles.otpBannerCode}>{otpCode}</Text>
+                        </Text>
+                    </View>
+                )}
 
                 {/* Info Hint */}
                 <View style={styles.infoHint}>
@@ -336,6 +362,26 @@ const styles = StyleSheet.create({
         ...typography.body,
         color: colors.primary,
         fontWeight: '600',
+    },
+    otpBanner: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: colors.success + '15',
+        borderRadius: borderRadius.md,
+        padding: spacing.md,
+        marginTop: spacing.lg,
+        borderWidth: 1,
+        borderColor: colors.success + '40',
+    },
+    otpBannerText: {
+        ...typography.body,
+        color: colors.success,
+        marginLeft: spacing.sm,
+    },
+    otpBannerCode: {
+        fontWeight: '700',
+        fontSize: 18,
+        letterSpacing: 2,
     },
     infoHint: {
         flexDirection: 'row',

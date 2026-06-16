@@ -5,12 +5,12 @@ import {
     StyleSheet,
     ScrollView,
     TouchableOpacity,
-    SafeAreaView,
     Dimensions,
     StatusBar,
     ActivityIndicator,
     Image,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, borderRadius, shadows, typography } from '../../theme';
 import { marketPrices, aiRecommendations, gapArticles } from '../../data/mockData';
@@ -226,10 +226,15 @@ const HomeScreen = ({ navigation }) => {
                         <TouchableOpacity onPress={() => navigation.navigate('GAP')}><Text style={styles.seeAll}>Xem tất cả</Text></TouchableOpacity>
                     </View>
                     {gapArticles.slice(0, 2).map((article) => (
-                        <TouchableOpacity key={article.id} style={styles.articleCard} activeOpacity={0.8}>
-                            <View style={styles.articleThumbnail}>
-                                <Text style={styles.articleEmoji}>{article.crop === 'Cà phê' ? '☕' : '�'}</Text>
-                            </View>
+                        <TouchableOpacity key={article.id} style={styles.articleCard} activeOpacity={0.8}
+                            onPress={() => navigation.navigate('GAPArticleDetail', { article })}
+                        >
+                            {article.thumbnail
+                                ? <Image source={article.thumbnail} style={styles.articleThumbnailImg} />
+                                : <View style={styles.articleThumbnail}>
+                                    <Text style={styles.articleEmoji}>{article.crop === 'Cà phê' ? '☕' : '🌿'}</Text>
+                                  </View>
+                            }
                             <View style={styles.articleContent}>
                                 <View style={styles.articleBadge}><Text style={styles.articleBadgeText}>{article.category}</Text></View>
                                 <Text style={styles.articleTitle} numberOfLines={2}>{article.title}</Text>
@@ -322,6 +327,7 @@ const styles = StyleSheet.create({
         overflow: 'hidden', marginBottom: spacing.md, ...shadows.sm,
     },
     articleThumbnail: { width: 100, height: 100, backgroundColor: colors.primaryLight + '20', justifyContent: 'center', alignItems: 'center' },
+    articleThumbnailImg: { width: 100, height: 100, backgroundColor: colors.border },
     articleEmoji: { fontSize: 36 },
     articleContent: { flex: 1, padding: spacing.md },
     articleBadge: { alignSelf: 'flex-start', backgroundColor: colors.primary + '15', paddingHorizontal: spacing.sm, paddingVertical: 2, borderRadius: borderRadius.sm, marginBottom: spacing.xs },

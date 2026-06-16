@@ -1,10 +1,6 @@
-/**
- * Location Service
- * Handles user location-related API calls
- */
-
-// Get API base URL from environment variables
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL || 'https://api.dienbien-smart-agri.app/api/v1';
+import { Platform } from 'react-native';
+const _BASE = process.env.EXPO_PUBLIC_API_BASE_URL || 'http://api.dienbien-smart-agri.app/api/v1';
+const API_BASE_URL = Platform.OS === 'web' ? '/proxy/v1' : _BASE;
 
 /**
  * Update user's location

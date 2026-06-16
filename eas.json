@@ -6,13 +6,43 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_IMGBB_API_KEY": "5e75a1cace9cf2d37273304cf4cd8605",
+        "EXPO_PUBLIC_DIFY_API_URL": "https://aichat.ptit.edu.vn/v1/chat-messages",
+        "EXPO_PUBLIC_DIFY_API_BASE": "https://aichat.ptit.edu.vn/v1",
+        "EXPO_PUBLIC_DIFY_API_KEY": "app-3K5fuI4jhxeAQ2QcVXWOLADk",
+        "EXPO_PUBLIC_PEST_API_URL": "https://aichat.ptit.edu.vn/v1/chat-messages",
+        "EXPO_PUBLIC_PEST_API_KEY": "app-3K5fuI4jhxeAQ2QcVXWOLADk",
+        "EXPO_PUBLIC_API_BASE_URL": "http://api.dienbien-smart-agri.app/api/v1"
+      }
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_IMGBB_API_KEY": "5e75a1cace9cf2d37273304cf4cd8605",
+        "EXPO_PUBLIC_DIFY_API_URL": "https://aichat.ptit.edu.vn/v1/chat-messages",
+        "EXPO_PUBLIC_DIFY_API_BASE": "https://aichat.ptit.edu.vn/v1",
+        "EXPO_PUBLIC_DIFY_API_KEY": "app-3K5fuI4jhxeAQ2QcVXWOLADk",
+        "EXPO_PUBLIC_PEST_API_URL": "https://aichat.ptit.edu.vn/v1/chat-messages",
+        "EXPO_PUBLIC_PEST_API_KEY": "app-3K5fuI4jhxeAQ2QcVXWOLADk",
+        "EXPO_PUBLIC_API_BASE_URL": "http://api.dienbien-smart-agri.app/api/v1"
+      }
     },
     "production": {
-      "autoIncrement": true
+      "autoIncrement": true,
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_IMGBB_API_KEY": "5e75a1cace9cf2d37273304cf4cd8605",
+        "EXPO_PUBLIC_DIFY_API_URL": "https://aichat.ptit.edu.vn/v1/chat-messages",
+        "EXPO_PUBLIC_DIFY_API_BASE": "https://aichat.ptit.edu.vn/v1",
+        "EXPO_PUBLIC_DIFY_API_KEY": "app-3K5fuI4jhxeAQ2QcVXWOLADk",
+        "EXPO_PUBLIC_PEST_API_URL": "https://aichat.ptit.edu.vn/v1/chat-messages",
+        "EXPO_PUBLIC_PEST_API_KEY": "app-3K5fuI4jhxeAQ2QcVXWOLADk",
+        "EXPO_PUBLIC_API_BASE_URL": "http://api.dienbien-smart-agri.app/api/v1"
+      }
     }
   },
   "submit": {

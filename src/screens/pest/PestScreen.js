@@ -5,13 +5,15 @@ import {
     StyleSheet,
     ScrollView,
     TouchableOpacity,
-    SafeAreaView,
     Alert,
     ActivityIndicator,
     RefreshControl,
+    Platform,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
 import { colors, spacing, borderRadius, shadows, typography } from '../../theme';
 import { pests } from '../../data/mockData';
 import { CameraTab, DiagnosisResult, HistoryItem, DetailModal } from './components';
@@ -174,36 +176,40 @@ const PestScreen = ({ navigation }) => {
         }
     };
 
+    const getBase64FromUri = async (uri) => {
+        if (Platform.OS === 'web') {
+            const response = await fetch(uri);
+            const blob = await response.blob();
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result.split(',')[1]);
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+            });
+        } else {
+            return await FileSystem.readAsStringAsync(uri, {
+                encoding: FileSystem.EncodingType.Base64,
+            });
+        }
+    };
+
     // Upload image to ImageBB
     const uploadToImageBB = async (imageUri) => {
         setIsUploading(true);
         try {
-            const response = await fetch(imageUri);
-            const blob = await response.blob();
-            const reader = new FileReader();
-            return new Promise((resolve, reject) => {
-                reader.onloadend = async () => {
-                    const base64data = reader.result.split(',')[1];
-                    const formData = new FormData();
-                    formData.append('key', IMGBB_API_KEY);
-                    formData.append('image', base64data);
-                    try {
-                        const uploadResponse = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: formData });
-                        const data = await uploadResponse.json();
-                        if (data.success) {
-                            const url = data.data.url;
-                            setUploadedUrl(url);
-                            resolve(url);
-                        } else {
-                            throw new Error(data.error?.message || 'Upload failed');
-                        }
-                    } catch (uploadError) {
-                        reject(uploadError);
-                    }
-                };
-                reader.onerror = reject;
-                reader.readAsDataURL(blob);
-            });
+            const base64data = await getBase64FromUri(imageUri);
+            const formData = new FormData();
+            formData.append('key', IMGBB_API_KEY);
+            formData.append('image', base64data);
+            const uploadResponse = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: formData });
+            const data = await uploadResponse.json();
+            if (data.success) {
+                const url = data.data.url;
+                setUploadedUrl(url);
+                return url;
+            } else {
+                throw new Error(data.error?.message || 'Upload failed');
+            }
         } catch (error) {
             console.error('Upload error:', error);
             Alert.alert('Lỗi', 'Không thể upload ảnh. Vui lòng thử lại.');

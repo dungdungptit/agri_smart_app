@@ -4,13 +4,13 @@ import {
     Text,
     StyleSheet,
     TouchableOpacity,
-    SafeAreaView,
     TextInput,
     KeyboardAvoidingView,
     Platform,
     ActivityIndicator,
     Alert,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, borderRadius, shadows, typography } from '../../theme';
 import { sendOTP } from '../../services/authService';
@@ -42,6 +42,7 @@ const LoginScreen = ({ navigation }) => {
                 navigation.navigate('OTP', {
                     phoneNumber,
                     expiresIn: result.data.expiresIn || 5,
+                    otpCode: result.data.otpCode,
                 });
             } else {
                 Alert.alert(

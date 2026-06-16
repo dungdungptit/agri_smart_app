@@ -1,10 +1,6 @@
-/**
- * Authentication Service
- * Handles all authentication-related API calls
- */
-
-// Get API base URL from environment variables
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL || 'https://api.dienbien-smart-agri.app/api/v1';
+import { Platform } from 'react-native';
+const _BASE = process.env.EXPO_PUBLIC_API_BASE_URL || 'http://api.dienbien-smart-agri.app/api/v1';
+const API_BASE_URL = Platform.OS === 'web' ? '/proxy/v1' : _BASE;
 
 /**
  * Send OTP to phone number
@@ -13,7 +9,9 @@ const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL || 'https://api.dienbi
  */
 export const sendOTP = async (phoneNumber) => {
     try {
-        const response = await fetch(`${API_BASE_URL}/auth/send-otp`, {
+        const url = `${API_BASE_URL}/auth/send-otp`;
+        console.log('[sendOTP] calling:', url);
+        const response = await fetch(url, {
             method: 'POST',
             headers: {
                 'accept': 'application/json',
@@ -31,6 +29,7 @@ export const sendOTP = async (phoneNumber) => {
                     phoneNumber: data.data.phoneNumber,
                     expiresAt: data.data.expiresAt,
                     expiresIn: data.data.expiresIn,
+                    otpCode: data.data.otpCode,
                 },
                 message: data.message,
             };
@@ -44,7 +43,7 @@ export const sendOTP = async (phoneNumber) => {
         console.error('sendOTP error:', error);
         return {
             success: false,
-            error: 'Lỗi kết nối. Vui lòng thử lại.',
+            error: `Lỗi kết nối: ${error?.message || String(error)}`,
         };
     }
 };

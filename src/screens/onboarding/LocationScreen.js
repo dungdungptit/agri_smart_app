@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     View,
     Text,
     StyleSheet,
     TouchableOpacity,
-    SafeAreaView,
     FlatList,
     TextInput,
     Modal,
@@ -12,10 +11,12 @@ import {
     ActivityIndicator,
     Alert,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import * as Location from 'expo-location';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, borderRadius, shadows, typography } from '../../theme';
 import { provinces } from '../../data/mockData';
-import { getCurrentLocation, saveUserLocation } from '../../services/weatherService';
+import { getCurrentLocation, saveUserLocation, getSavedLocation } from '../../services/weatherService';
 
 const { height } = Dimensions.get('window');
 
@@ -25,6 +26,24 @@ const LocationScreen = ({ navigation }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [gpsRequested, setGpsRequested] = useState(false);
     const [gpsLoading, setGpsLoading] = useState(false);
+
+    // Auto-skip if permission already granted and location already saved
+    useEffect(() => {
+        const checkAndAutoSkip = async () => {
+            try {
+                const { status } = await Location.getForegroundPermissionsAsync();
+                if (status !== 'granted') return;
+
+                const saved = await getSavedLocation();
+                if (saved && saved.latitude && saved.longitude) {
+                    navigation.replace('MainTabs');
+                }
+            } catch (e) {
+                // Không làm gì nếu lỗi — user tự chọn bình thường
+            }
+        };
+        checkAndAutoSkip();
+    }, []);
 
     const filteredProvinces = provinces.filter(p =>
         p.name.toLowerCase().includes(searchQuery.toLowerCase())

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import {
     View, Text, StyleSheet, ScrollView, TouchableOpacity,
-    SafeAreaView, TextInput, Dimensions,
+    TextInput, Dimensions, Image,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, borderRadius, shadows, typography } from '../../theme';
 import { gapArticles } from '../../data/mockData';
@@ -63,8 +64,16 @@ const GAPScreen = ({ navigation }) => {
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>Bài viết mới nhất</Text>
                     {filteredArticles.map((article) => (
-                        <TouchableOpacity key={article.id} style={styles.articleCard}>
-                            <View style={styles.articleThumb}><Text style={{ fontSize: 32 }}>📚</Text></View>
+                        <TouchableOpacity
+                            key={article.id}
+                            style={styles.articleCard}
+                            activeOpacity={0.8}
+                            onPress={() => navigation.navigate('GAPArticleDetail', { article })}
+                        >
+                            {article.thumbnail
+                                ? <Image source={article.thumbnail} style={styles.articleThumbImg} />
+                                : <View style={styles.articleThumb}><Text style={{ fontSize: 32 }}>📚</Text></View>
+                            }
                             <View style={styles.articleContent}>
                                 <View style={styles.badge}>
                                     <Text style={styles.badgeText}>{article.category}</Text>
@@ -72,6 +81,7 @@ const GAPScreen = ({ navigation }) => {
                                 <Text style={styles.articleTitle} numberOfLines={2}>{article.title}</Text>
                                 <Text style={styles.articleMeta}>{article.readTime}</Text>
                             </View>
+                            <Ionicons name="chevron-forward" size={18} color={colors.textMuted} style={{ alignSelf: 'center', marginRight: 8 }} />
                         </TouchableOpacity>
                     ))}
                 </View>
@@ -116,6 +126,7 @@ const styles = StyleSheet.create({
     sectionTitle: { ...typography.h3, color: colors.textPrimary, marginBottom: spacing.md },
     articleCard: { flexDirection: 'row', backgroundColor: colors.surface, borderRadius: 12, marginBottom: 10, ...shadows.sm },
     articleThumb: { width: 80, height: 80, backgroundColor: colors.primaryLight + '20', justifyContent: 'center', alignItems: 'center', borderRadius: 12 },
+    articleThumbImg: { width: 80, height: 80, borderRadius: 12, backgroundColor: colors.border },
     articleContent: { flex: 1, padding: spacing.md },
     badge: { alignSelf: 'flex-start', backgroundColor: colors.primary + '15', paddingHorizontal: 8, paddingVertical: 2, borderRadius: 4, marginBottom: 4 },
     badgeText: { ...typography.caption, color: colors.primary, fontWeight: '600' },

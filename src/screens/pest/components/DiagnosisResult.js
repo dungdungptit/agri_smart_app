@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import Markdown from 'react-native-markdown-display';
 import { colors, spacing, borderRadius, shadows, typography } from '../../../theme';
 
 // Parse JSON answer from API
@@ -26,7 +27,13 @@ const DiagnosisResult = ({ result, onNewDiagnosis }) => {
                     <Ionicons name="medkit" size={24} color={colors.error} />
                     <Text style={styles.title}>Kết quả chẩn đoán</Text>
                 </View>
-                <Text style={styles.rawText}>{result.answer || 'Không có dữ liệu'}</Text>
+                {result.answer ? (
+                    <Markdown style={markdownStyles}>
+                        {result.answer}
+                    </Markdown>
+                ) : (
+                    <Text style={styles.rawText}>Không có dữ liệu</Text>
+                )}
                 {onNewDiagnosis && (
                     <TouchableOpacity style={styles.newButton} onPress={onNewDiagnosis}>
                         <Ionicons name="refresh" size={20} color={colors.primary} />
@@ -304,4 +311,18 @@ const styles = StyleSheet.create({
     },
 });
 
+const markdownStyles = {
+    body: {
+        ...typography.body,
+        color: colors.textSecondary,
+        lineHeight: 22,
+    },
+    heading1: { ...typography.h1, color: colors.textPrimary, marginBottom: spacing.md },
+    heading2: { ...typography.h2, color: colors.textPrimary, marginBottom: spacing.sm, marginTop: spacing.md },
+    heading3: { ...typography.h3, color: colors.textPrimary, marginBottom: spacing.sm },
+    paragraph: { marginBottom: spacing.sm },
+    list_item: { marginBottom: spacing.xs },
+};
+
 export default DiagnosisResult;
+

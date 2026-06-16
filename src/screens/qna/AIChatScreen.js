@@ -5,7 +5,6 @@ import {
     StyleSheet,
     ScrollView,
     TouchableOpacity,
-    SafeAreaView,
     TextInput,
     KeyboardAvoidingView,
     Platform,
@@ -14,16 +13,20 @@ import {
     Alert,
     Modal,
     Dimensions,
+    Image,
     Keyboard,
-    TouchableWithoutFeedback,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
 import Markdown from 'react-native-markdown-display';
 import { colors, spacing, borderRadius, shadows, typography } from '../../theme';
 
 const API_URL = process.env.EXPO_PUBLIC_DIFY_API_URL;
 const API_BASE = process.env.EXPO_PUBLIC_DIFY_API_BASE;
 const API_KEY = process.env.EXPO_PUBLIC_DIFY_API_KEY;
+const IMGBB_API_KEY = process.env.EXPO_PUBLIC_IMGBB_API_KEY;
 const USER_ID = 'Trợ lý AI Nông nghiệp tỉnh Điện Biên_user';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -35,6 +38,9 @@ const AIChatScreen = ({ navigation }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [conversationId, setConversationId] = useState('');
     const [treeType, setTreeType] = useState(1);
+    const [selectedImage, setSelectedImage] = useState(null);
+    const [imageUrl, setImageUrl] = useState(null);
+    const [isUploading, setIsUploading] = useState(false);
     const scrollViewRef = useRef(null);
     const fadeAnim = useRef(new Animated.Value(0)).current;
 
@@ -274,18 +280,88 @@ const AIChatScreen = ({ navigation }) => {
         }
     };
 
+    const getBase64FromUri = async (uri) => {
+        if (Platform.OS === 'web') {
+            const response = await fetch(uri);
+            const blob = await response.blob();
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result.split(',')[1]);
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+            });
+        }
+        return await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 });
+    };
+
+    const uploadToImgBB = async (uri) => {
+        setIsUploading(true);
+        try {
+            const base64 = await getBase64FromUri(uri);
+            const formData = new FormData();
+            formData.append('key', IMGBB_API_KEY);
+            formData.append('image', base64);
+            const res = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: formData });
+            const data = await res.json();
+            if (data.success) {
+                setImageUrl(data.data.url);
+                return data.data.url;
+            }
+            throw new Error(data.error?.message || 'Upload failed');
+        } catch (e) {
+            console.error('ImgBB upload error:', e);
+            Alert.alert('Lỗi', 'Không thể upload ảnh. Vui lòng thử lại.');
+            setSelectedImage(null);
+            return null;
+        } finally {
+            setIsUploading(false);
+        }
+    };
+
+    const pickImage = async () => {
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== 'granted') {
+            Alert.alert('Cần quyền truy cập', 'Vui lòng cấp quyền thư viện ảnh');
+            return;
+        }
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: false,
+            quality: 0.8,
+        });
+        if (!result.canceled && result.assets[0]) {
+            const uri = result.assets[0].uri;
+            setSelectedImage(uri);
+            setImageUrl(null);
+            await uploadToImgBB(uri);
+        }
+    };
+
+    const removeImage = () => {
+        setSelectedImage(null);
+        setImageUrl(null);
+    };
+
     const sendMessage = async () => {
         if (!inputText.trim() || isLoading) return;
+        if (isUploading) {
+            Alert.alert('Vui lòng chờ', 'Ảnh đang được upload...');
+            return;
+        }
 
         const userMessage = {
             id: Date.now().toString(),
             type: 'user',
             text: inputText.trim(),
+            image: imageUrl || null,
             timestamp: new Date(),
         };
 
         setMessages(prev => [...prev, userMessage]);
         setInputText('');
+        const currentImageUrl = imageUrl;
+        setSelectedImage(null);
+        setImageUrl(null);
         setIsLoading(true);
 
         setTimeout(() => {
@@ -299,6 +375,14 @@ const AIChatScreen = ({ navigation }) => {
                 response_mode: 'blocking',
                 user: USER_ID,
             };
+
+            if (currentImageUrl) {
+                requestBody.files = [{
+                    type: 'image',
+                    transfer_method: 'remote_url',
+                    url: currentImageUrl,
+                }];
+            }
 
             if (conversationId) {
                 requestBody.conversation_id = conversationId;
@@ -423,7 +507,16 @@ const AIChatScreen = ({ navigation }) => {
                     message.isError && styles.errorBubble,
                 ]}>
                     {isUser ? (
-                        <Text style={styles.userMessageText}>{message.text}</Text>
+                        <>
+                            {message.image && (
+                                <Image
+                                    source={{ uri: message.image }}
+                                    style={styles.messageImage}
+                                    resizeMode="cover"
+                                />
+                            )}
+                            <Text style={styles.userMessageText}>{message.text}</Text>
+                        </>
                     ) : (
                         <Markdown style={markdownStyles}>{message.text}</Markdown>
                     )}
@@ -628,7 +721,33 @@ const AIChatScreen = ({ navigation }) => {
 
                     {/* Input Area */}
                     <View style={styles.inputContainer}>
+                        {/* Image preview */}
+                        {selectedImage && (
+                            <View style={styles.imagePreviewContainer}>
+                                <Image source={{ uri: selectedImage }} style={styles.imagePreview} resizeMode="cover" />
+                                {isUploading && (
+                                    <View style={styles.imageUploadingOverlay}>
+                                        <ActivityIndicator size="small" color={colors.textLight} />
+                                    </View>
+                                )}
+                                <TouchableOpacity style={styles.imageRemoveBtn} onPress={removeImage}>
+                                    <Ionicons name="close-circle" size={22} color={colors.error} />
+                                </TouchableOpacity>
+                                {imageUrl && (
+                                    <View style={styles.imageReadyBadge}>
+                                        <Ionicons name="checkmark-circle" size={16} color={colors.success} />
+                                    </View>
+                                )}
+                            </View>
+                        )}
                         <View style={styles.inputWrapper}>
+                            <TouchableOpacity
+                                style={styles.imagePickerBtn}
+                                onPress={pickImage}
+                                disabled={isLoading}
+                            >
+                                <Ionicons name="image-outline" size={22} color={selectedImage ? colors.primary : colors.textMuted} />
+                            </TouchableOpacity>
                             <TextInput
                                 style={styles.textInput}
                                 placeholder="Nhập câu hỏi của bạn..."
@@ -640,14 +759,14 @@ const AIChatScreen = ({ navigation }) => {
                                 editable={!isLoading}
                             />
                             <TouchableOpacity
-                                style={[styles.sendButton, (!inputText.trim() || isLoading) && styles.sendButtonDisabled]}
+                                style={[styles.sendButton, (!inputText.trim() || isLoading || isUploading) && styles.sendButtonDisabled]}
                                 onPress={sendMessage}
-                                disabled={!inputText.trim() || isLoading}
+                                disabled={!inputText.trim() || isLoading || isUploading}
                             >
                                 <Ionicons
                                     name="send"
                                     size={20}
-                                    color={inputText.trim() && !isLoading ? colors.textLight : colors.textMuted}
+                                    color={(inputText.trim() && !isLoading && !isUploading) ? colors.textLight : colors.textMuted}
                                 />
                             </TouchableOpacity>
                         </View>
@@ -785,14 +904,57 @@ const styles = StyleSheet.create({
         paddingHorizontal: spacing.md, paddingVertical: spacing.sm,
         backgroundColor: colors.surface, borderTopWidth: 1, borderTopColor: colors.border,
     },
+    imagePreviewContainer: {
+        marginBottom: spacing.sm,
+        alignSelf: 'flex-start',
+        position: 'relative',
+    },
+    imagePreview: {
+        width: 80,
+        height: 80,
+        borderRadius: borderRadius.md,
+        borderWidth: 1,
+        borderColor: colors.border,
+    },
+    imageUploadingOverlay: {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: 'rgba(0,0,0,0.45)',
+        borderRadius: borderRadius.md,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    imageRemoveBtn: {
+        position: 'absolute',
+        top: -8,
+        right: -8,
+        backgroundColor: colors.surface,
+        borderRadius: 11,
+    },
+    imageReadyBadge: {
+        position: 'absolute',
+        bottom: 4,
+        right: 4,
+        backgroundColor: colors.surface,
+        borderRadius: 8,
+    },
     inputWrapper: {
         flexDirection: 'row', alignItems: 'flex-end', backgroundColor: colors.background,
-        borderRadius: borderRadius.xl, paddingLeft: spacing.md, paddingRight: spacing.xs,
+        borderRadius: borderRadius.xl, paddingLeft: spacing.xs, paddingRight: spacing.xs,
         paddingVertical: spacing.xs, borderWidth: 1, borderColor: colors.border,
+    },
+    imagePickerBtn: {
+        width: 36, height: 36, justifyContent: 'center', alignItems: 'center',
+        marginRight: spacing.xs,
     },
     textInput: { flex: 1, ...typography.body, color: colors.textPrimary, maxHeight: 100, paddingVertical: spacing.sm },
     sendButton: { width: 40, height: 40, borderRadius: 20, backgroundColor: colors.primary, justifyContent: 'center', alignItems: 'center' },
     sendButtonDisabled: { backgroundColor: colors.border },
+    messageImage: {
+        width: 200,
+        height: 150,
+        borderRadius: borderRadius.md,
+        marginBottom: spacing.xs,
+    },
 });
 
 export default AIChatScreen;

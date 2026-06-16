@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, SafeAreaView, ScrollView, Image, Alert, ActivityIndicator, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, Image, Alert, ActivityIndicator, Platform } from 'react-native';
+import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -20,6 +21,7 @@ import PestScreen from '../screens/pest/PestScreen';
 import MarketScreen from '../screens/market/MarketScreen';
 import MarketPriceDetailScreen from '../screens/market/MarketPriceDetailScreen';
 import GAPScreen from '../screens/gap/GAPScreen';
+import GAPArticleDetailScreen from '../screens/gap/GAPArticleDetailScreen';
 import QnAScreen from '../screens/qna/QnAScreen';
 import AIChatScreen from '../screens/qna/AIChatScreen';
 
@@ -260,6 +262,7 @@ const AppNavigator = () => {
     }
 
     return (
+        <SafeAreaProvider>
         <NavigationContainer>
             <Stack.Navigator
                 initialRouteName={isLoggedIn ? "MainTabs" : "Splash"}
@@ -280,11 +283,13 @@ const AppNavigator = () => {
 
                 {/* Additional Screens */}
                 <Stack.Screen name="GAP" component={GAPScreen} options={{ title: 'Kiến thức GAP' }} />
+                <Stack.Screen name="GAPArticleDetail" component={GAPArticleDetailScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="QnA" component={QnAScreen} options={{ title: 'Diễn đàn' }} />
                 <Stack.Screen name="AIChat" component={AIChatScreen} options={{ title: 'Trợ lý AI' }} />
                 <Stack.Screen name="MarketPriceDetail" component={MarketPriceDetailScreen} options={{ title: 'Chi tiết giá thị trường' }} />
             </Stack.Navigator>
         </NavigationContainer>
+        </SafeAreaProvider>
     );
 };
 

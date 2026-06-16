@@ -1,4 +1,4 @@
-Đây là api lấy danh sách các lần chuẩn đoán bệnh
+# 1. Api lấy danh sách các lần chuẩn đoán bệnh
 curl --location 'https://aichat.ptit.edu.vn/v1/conversations?user=aiptit&limit=20' \
 --header 'Authorization: Bearer app-TSFY8tm9VGjBa9R7azSf72On'
 
@@ -45,7 +45,7 @@ trả về
     ]
 }
 
-đây là api đổi tên 1 chuẩn đoán bệnh
+# 2. Api đổi tên 1 chuẩn đoán bệnh
 curl --location 'https://aichat.ptit.edu.vn/v1/conversations/f1ae2f54-5a61-4703-a386-9a8b39415180/name' \
 --header 'Content-Type: application/json' \
 --header 'Authorization: Bearer app-TSFY8tm9VGjBa9R7azSf72On' \
@@ -68,7 +68,8 @@ trả về
     "updated_at": 1767012996
 }
 
-đây là api xóa 1 chuẩn đoán bệnh
+
+# 3. Api xóa 1 chuẩn đoán bệnh
 curl --location --request DELETE 'https://aichat.ptit.edu.vn/v1/conversations/680e7093-1b9f-4b7a-aec4-01197ccd5e1c' \
 --header 'Content-Type: application/json' \
 --header 'Accept: application/json' \
@@ -78,7 +79,7 @@ curl --location --request DELETE 'https://aichat.ptit.edu.vn/v1/conversations/68
 }'
 trả về status 204
 
-đây là api chi tiết 1 chuẩn đoán bệnh
+# 4. Api chi tiết 1 chuẩn đoán bệnh
 curl --location 'https://aichat.ptit.edu.vn/v1/messages?user=aiptit&conversation_id=4020c35c-b7a7-40f5-9984-6491171e30cc' \
 --header 'Authorization: Bearer app-TSFY8tm9VGjBa9R7azSf72On'
 

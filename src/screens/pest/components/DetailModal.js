@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal, ActivityIndicator, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import Markdown from 'react-native-markdown-display';
 import { colors, spacing, borderRadius, shadows, typography } from '../../../theme';
 import { parseAnswerJSON } from './DiagnosisResult';
 
@@ -106,7 +107,9 @@ const DetailModal = ({ visible, detail, loading, onClose }) => {
                         )}
                     </View>
                 ) : msg.answer ? (
-                    <Text style={styles.rawAnswer}>{msg.answer}</Text>
+                    <Markdown style={markdownStyles}>
+                        {msg.answer}
+                    </Markdown>
                 ) : null}
             </View>
         );
@@ -342,5 +345,18 @@ const styles = StyleSheet.create({
         lineHeight: 18,
     },
 });
+
+const markdownStyles = {
+    body: {
+        ...typography.body,
+        color: colors.textSecondary,
+        lineHeight: 22,
+    },
+    heading1: { ...typography.h1, color: colors.textPrimary, marginBottom: spacing.md },
+    heading2: { ...typography.h2, color: colors.textPrimary, marginBottom: spacing.sm, marginTop: spacing.md },
+    heading3: { ...typography.h3, color: colors.textPrimary, marginBottom: spacing.sm },
+    paragraph: { marginBottom: spacing.sm },
+    list_item: { marginBottom: spacing.xs },
+};
 
 export default DetailModal;

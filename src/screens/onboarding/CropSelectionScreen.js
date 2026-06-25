@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
         borderRadius: 7,
     },
     stepCompleted: {
-        backgroundColor: colors.success,
+        backgroundColor: colors.primary,
     },
     stepLine: {
         width: 40,
@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
         marginHorizontal: spacing.xs,
     },
     stepLineCompleted: {
-        backgroundColor: colors.success,
+        backgroundColor: colors.primary,
     },
     stepText: {
         position: 'absolute',

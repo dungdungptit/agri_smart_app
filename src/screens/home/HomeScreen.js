@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
     View,
     Text,
@@ -11,17 +11,26 @@ import {
     Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, borderRadius, shadows, typography } from '../../theme';
 import { marketPrices, aiRecommendations, gapArticles } from '../../data/mockData';
 import { getLocationForWeather, fetchWeatherData } from '../../services/weatherService';
+import { useAuth } from '../../context/AuthContext';
+import { trackPageview } from '../../services/cmsService';
 
 const { width } = Dimensions.get('window');
 
 const HomeScreen = ({ navigation }) => {
+    const { user } = useAuth();
     const [weather, setWeather] = useState(null);
     const [location, setLocation] = useState(null);
     const [loading, setLoading] = useState(true);
+
+    // T016: Track pageview when Home tab gains focus
+    useFocusEffect(useCallback(() => {
+        trackPageview(user, 'home');
+    }, [user]));
 
     useEffect(() => {
         loadWeatherData();

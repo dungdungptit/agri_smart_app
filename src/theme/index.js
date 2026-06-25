@@ -1,11 +1,11 @@
 // Trợ lý AI Nông nghiệp tỉnh Điện Biên Design System - Colors & Theme
 export const colors = {
-    // Primary - Agricultural Green
-    primary: '#2E7D32',
-    primaryLight: '#4CAF50',
-    primaryDark: '#1B5E20',
-    primaryGradientStart: '#43A047',
-    primaryGradientEnd: '#2E7D32',
+    // Primary - Brand Blue
+    primary: '#0066BC',
+    primaryLight: '#3385CC',
+    primaryDark: '#004A8F',
+    primaryGradientStart: '#1A7AD4',
+    primaryGradientEnd: '#0066BC',
 
     // Secondary - Earth Brown
     secondary: '#795548',

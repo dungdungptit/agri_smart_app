@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Image, Alert, ActivityIndicator, Platform } from 'react-native';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useFocusEffect } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../theme';
 import { useAuth } from '../context/AuthContext';
+import { trackPageview } from '../services/cmsService';
 
 // Screens
 import SplashScreen from '../screens/splash/SplashScreen';
@@ -83,6 +84,11 @@ const MainTabs = () => {
 const MoreScreen = ({ navigation }) => {
     const { user, isLoggedIn, logout } = useAuth();
     const [isLoggingOut, setIsLoggingOut] = React.useState(false);
+
+    // T019: Track pageview when More/Market tab gains focus
+    useFocusEffect(useCallback(() => {
+        trackPageview(user, 'market');
+    }, [user]));
 
     const handleLogout = () => {
         const performLogout = async () => {

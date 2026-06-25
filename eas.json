@@ -14,7 +14,9 @@
         "EXPO_PUBLIC_DIFY_API_KEY": "app-3K5fuI4jhxeAQ2QcVXWOLADk",
         "EXPO_PUBLIC_PEST_API_URL": "https://aichat.ptit.edu.vn/v1/chat-messages",
         "EXPO_PUBLIC_PEST_API_KEY": "app-3K5fuI4jhxeAQ2QcVXWOLADk",
-        "EXPO_PUBLIC_API_BASE_URL": "http://api.dienbien-smart-agri.app/api/v1"
+        "EXPO_PUBLIC_API_BASE_URL": "http://api.dienbien-smart-agri.app/api/v1",
+        "EXPO_PUBLIC_APP_SECRET": "QGFF4PlGpXlBz9SXQ1M0gwM96ZQ5h0NE",
+        "EXPO_PUBLIC_CMS_BASE_URL": "https://cms.dienbien-smart-agri.app"
       }
     },
     "preview": {
@@ -26,7 +28,9 @@
         "EXPO_PUBLIC_DIFY_API_KEY": "app-3K5fuI4jhxeAQ2QcVXWOLADk",
         "EXPO_PUBLIC_PEST_API_URL": "https://aichat.ptit.edu.vn/v1/chat-messages",
         "EXPO_PUBLIC_PEST_API_KEY": "app-3K5fuI4jhxeAQ2QcVXWOLADk",
-        "EXPO_PUBLIC_API_BASE_URL": "http://api.dienbien-smart-agri.app/api/v1"
+        "EXPO_PUBLIC_API_BASE_URL": "http://api.dienbien-smart-agri.app/api/v1",
+        "EXPO_PUBLIC_APP_SECRET": "QGFF4PlGpXlBz9SXQ1M0gwM96ZQ5h0NE",
+        "EXPO_PUBLIC_CMS_BASE_URL": "https://cms.dienbien-smart-agri.app"
       }
     },
     "production": {
@@ -41,7 +45,9 @@
         "EXPO_PUBLIC_DIFY_API_KEY": "app-3K5fuI4jhxeAQ2QcVXWOLADk",
         "EXPO_PUBLIC_PEST_API_URL": "https://aichat.ptit.edu.vn/v1/chat-messages",
         "EXPO_PUBLIC_PEST_API_KEY": "app-3K5fuI4jhxeAQ2QcVXWOLADk",
-        "EXPO_PUBLIC_API_BASE_URL": "http://api.dienbien-smart-agri.app/api/v1"
+        "EXPO_PUBLIC_API_BASE_URL": "http://api.dienbien-smart-agri.app/api/v1",
+        "EXPO_PUBLIC_APP_SECRET": "QGFF4PlGpXlBz9SXQ1M0gwM96ZQ5h0NE",
+        "EXPO_PUBLIC_CMS_BASE_URL": "https://cms.dienbien-smart-agri.app"
       }
     }
   },

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
     View,
     Text,
@@ -17,22 +17,25 @@ import {
     Keyboard,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import Markdown from 'react-native-markdown-display';
 import { colors, spacing, borderRadius, shadows, typography } from '../../theme';
+import { useAuth } from '../../context/AuthContext';
+import { getEffectiveUserId, trackConversation, trackPageview } from '../../services/cmsService';
 
 const API_URL = process.env.EXPO_PUBLIC_DIFY_API_URL;
 const API_BASE = process.env.EXPO_PUBLIC_DIFY_API_BASE;
 const API_KEY = process.env.EXPO_PUBLIC_DIFY_API_KEY;
 const IMGBB_API_KEY = process.env.EXPO_PUBLIC_IMGBB_API_KEY;
-const USER_ID = 'Trợ lý AI Nông nghiệp tỉnh Điện Biên_user';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const SIDEBAR_WIDTH = SCREEN_WIDTH * 0.75;
 
 const AIChatScreen = ({ navigation }) => {
+    const { user } = useAuth();
     const [messages, setMessages] = useState([]);
     const [inputText, setInputText] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -51,6 +54,11 @@ const AIChatScreen = ({ navigation }) => {
     const [editingConversation, setEditingConversation] = useState(null);
     const [editName, setEditName] = useState('');
     const sidebarAnim = useRef(new Animated.Value(-SIDEBAR_WIDTH)).current;
+
+    // T017: Track pageview when this tab gains focus
+    useFocusEffect(useCallback(() => {
+        trackPageview(user, 'chat');
+    }, [user]));
 
     useEffect(() => {
         Animated.timing(fadeAnim, {
@@ -95,7 +103,7 @@ const AIChatScreen = ({ navigation }) => {
         setLoadingConversations(true);
         try {
             const response = await fetch(
-                `${API_BASE}/conversations?user=${USER_ID}&limit=20`,
+                `${API_BASE}/conversations?user=${getEffectiveUserId(user)}&limit=20`,
                 {
                     headers: { 'Authorization': `Bearer ${API_KEY}` },
                 }
@@ -116,7 +124,7 @@ const AIChatScreen = ({ navigation }) => {
 
         try {
             const response = await fetch(
-                `${API_BASE}/messages?user=${USER_ID}&conversation_id=${convId}`,
+                `${API_BASE}/messages?user=${getEffectiveUserId(user)}&conversation_id=${convId}`,
                 {
                     headers: { 'Authorization': `Bearer ${API_KEY}` },
                 }
@@ -180,7 +188,7 @@ const AIChatScreen = ({ navigation }) => {
                     body: JSON.stringify({
                         name: editName.trim(),
                         auto_generate: false,
-                        user: USER_ID,
+                        user: getEffectiveUserId(user),
                     }),
                 }
             );
@@ -216,7 +224,7 @@ const AIChatScreen = ({ navigation }) => {
                                         'Authorization': `Bearer ${API_KEY}`,
                                         'Content-Type': 'application/json',
                                     },
-                                    body: JSON.stringify({ user: USER_ID }),
+                                    body: JSON.stringify({ user: getEffectiveUserId(user) }),
                                 }
                             );
 
@@ -373,7 +381,7 @@ const AIChatScreen = ({ navigation }) => {
                 inputs: { tree_type: treeType },
                 query: userMessage.text,
                 response_mode: 'blocking',
-                user: USER_ID,
+                user: getEffectiveUserId(user),
             };
 
             if (currentImageUrl) {
@@ -400,6 +408,10 @@ const AIChatScreen = ({ navigation }) => {
             const data = await response.json();
 
             if (data.conversation_id) {
+                // T010: Track new conversation in CMS on first message only
+                if (!conversationId) {
+                    trackConversation(user);
+                }
                 setConversationId(data.conversation_id);
             }
 

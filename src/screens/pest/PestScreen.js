@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
     View,
     Text,
@@ -17,14 +17,19 @@ import * as FileSystem from 'expo-file-system';
 import { colors, spacing, borderRadius, shadows, typography } from '../../theme';
 import { pests } from '../../data/mockData';
 import { CameraTab, DiagnosisResult, HistoryItem, DetailModal } from './components';
+import { useFocusEffect } from '@react-navigation/native';
+import { useAuth } from '../../context/AuthContext';
+import { getEffectiveUserId, trackDiagnosis, trackPageview } from '../../services/cmsService';
 
 const IMGBB_API_KEY = process.env.EXPO_PUBLIC_IMGBB_API_KEY;
 const PEST_API_URL = process.env.EXPO_PUBLIC_PEST_API_URL;
 const PEST_API_KEY = process.env.EXPO_PUBLIC_PEST_API_KEY;
 const PEST_API_BASE = 'https://aichat.ptit.edu.vn/v1';
-const USER_ID = 'Trợ lý AI Nông nghiệp tỉnh Điện Biên_user';
+
+const CROP_TYPE_LABELS = { 1: 'Cà phê', 0: 'Mắc ca' };
 
 const PestScreen = ({ navigation }) => {
+    const { user } = useAuth();
     const [activeTab, setActiveTab] = useState('camera');
     const [selectedCrop, setSelectedCrop] = useState('all');
     const [selectedImage, setSelectedImage] = useState(null);
@@ -48,6 +53,11 @@ const PestScreen = ({ navigation }) => {
         ? pests
         : pests.filter(p => p.crop === selectedCrop);
 
+    // T018: Track pageview when this tab gains focus
+    useFocusEffect(useCallback(() => {
+        trackPageview(user, 'pest');
+    }, [user]));
+
     // Fetch history when tab changes to 'history'
     useEffect(() => {
         if (activeTab === 'history') {
@@ -60,7 +70,7 @@ const PestScreen = ({ navigation }) => {
         setLoadingHistory(true);
         try {
             const response = await fetch(
-                `${PEST_API_BASE}/conversations?user=${USER_ID}&limit=50`,
+                `${PEST_API_BASE}/conversations?user=${getEffectiveUserId(user)}&limit=50`,
                 { headers: { 'Authorization': `Bearer ${PEST_API_KEY}` } }
             );
             const data = await response.json();
@@ -92,7 +102,7 @@ const PestScreen = ({ navigation }) => {
                         'Authorization': `Bearer ${PEST_API_KEY}`,
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ name: editName.trim(), auto_generate: false, user: USER_ID }),
+                    body: JSON.stringify({ name: editName.trim(), auto_generate: false, user: getEffectiveUserId(user) }),
                 }
             );
             setHistoryList(prev => prev.map(item =>
@@ -124,7 +134,7 @@ const PestScreen = ({ navigation }) => {
                                     'Authorization': `Bearer ${PEST_API_KEY}`,
                                     'Content-Type': 'application/json',
                                 },
-                                body: JSON.stringify({ user: USER_ID }),
+                                body: JSON.stringify({ user: getEffectiveUserId(user) }),
                             });
                             setHistoryList(prev => prev.filter(item => item.id !== id));
                         } catch (error) {
@@ -143,7 +153,7 @@ const PestScreen = ({ navigation }) => {
         setDetailModal({ loading: true });
         try {
             const response = await fetch(
-                `${PEST_API_BASE}/messages?user=${USER_ID}&conversation_id=${convId}`,
+                `${PEST_API_BASE}/messages?user=${getEffectiveUserId(user)}&conversation_id=${convId}`,
                 { headers: { 'Authorization': `Bearer ${PEST_API_KEY}` } }
             );
             const data = await response.json();
@@ -274,7 +284,7 @@ const PestScreen = ({ navigation }) => {
                 query: "Đây là bệnh gì?",
                 response_mode: "blocking",
                 conversation_id: "",
-                user: USER_ID,
+                user: getEffectiveUserId(user),
                 files: [{ type: "image", transfer_method: "remote_url", url: uploadedUrl }]
             };
             const response = await fetch(PEST_API_URL, {
@@ -285,6 +295,8 @@ const PestScreen = ({ navigation }) => {
             const data = await response.json();
             if (data.answer) {
                 setDiagnosisResult({ answer: data.answer });
+                // T013: Track completed diagnosis in CMS
+                trackDiagnosis(user, CROP_TYPE_LABELS[treeType], data.answer.slice(0, 200));
             } else {
                 Alert.alert('Lỗi', 'Không thể phân tích ảnh');
             }

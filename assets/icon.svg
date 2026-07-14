@@ -1,7 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
-  <rect width="1024" height="1024" fill="#2E7D32"/>
-  <circle cx="512" cy="400" r="200" fill="#4CAF50" opacity="0.3"/>
-  <text x="512" y="450" text-anchor="middle" font-size="200" fill="white">🌾</text>
-  <text x="512" y="700" text-anchor="middle" font-size="80" font-weight="bold" fill="white" font-family="sans-serif">Trợ lý AI Nông nghiệp tỉnh Điện Biên</text>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024"><rect width="1024" height="1024" fill="#2E7D32"/><circle cx="512" cy="400" r="200" fill="#4CAF50" opacity=".3"/><text x="512" y="450" fill="#fff" font-size="200" text-anchor="middle">🌾</text><text x="512" y="700" fill="#fff" font-family="sans-serif" font-size="80" font-weight="bold" text-anchor="middle">Trợ lý AI Nông nghiệp tỉnh Điện Biên</text></svg>
